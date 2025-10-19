@@ -1,562 +1,166 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Abdulhamid Vault - Local</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Abdulhamid Vault</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* هيبة التصميم */
-    :root{
-      --bg1: #0b1220;
-      --bg2: linear-gradient(135deg,#071129 0%,#0f1830 50%,#1b1430 100%);
-      --accent: #d4af37; /* ذهبي */
-      --card: rgba(255,255,255,0.04);
-      --glass: rgba(255,255,255,0.03);
-    }
-    html,body{height:100%}
-    body{
-      background: var(--bg2);
-      color: #e6eef8;
-      -webkit-font-smoothing:antialiased;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    .vault-header{
-      background: linear-gradient(90deg, rgba(212,175,55,0.12), rgba(212,175,55,0.03));
-      border-left: 4px solid rgba(212,175,55,0.28);
-      padding: 18px;
-      border-radius: 12px;
+    body {
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      font-family: 'Segoe UI', sans-serif;
+      color: #f1f5f9;
     }
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 14px;
-      box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
-    .muted { color: #9fb0d6; }
-    .gold { color: var(--accent); }
-    .file-card { transition: transform .16s cubic-bezier(.2,.9,.2,1), box-shadow .16s; }
-    .file-card:hover { transform: translateY(-8px); box-shadow: 0 24px 50px rgba(2,6,23,0.6); }
-    .btn-hero { background: linear-gradient(90deg,#ffd36b,#d4af37); color:#071128; font-weight:700; }
-    .badge { background: rgba(212,175,55,0.08); color: var(--accent); padding:6px 10px; border-radius:999px; font-weight:600; }
-    .input-dark { background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); color: #dfe9fb; }
-    .modal-backdrop{ background: linear-gradient(180deg, rgba(2,6,23,0.7), rgba(2,6,23,0.85)); }
+    .gold {
+      color: #facc15;
+    }
+    .input {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      width: 100%;
+      color: #f1f5f9;
+    }
+    .input::placeholder {
+      color: #94a3b8;
+    }
+    .btn {
+      background: #facc15;
+      color: #1e293b;
+      font-weight: bold;
+      padding: 0.75rem;
+      border-radius: 8px;
+      width: 100%;
+    }
+    .btn-secondary {
+      background: #334155;
+      color: #f1f5f9;
+    }
   </style>
 </head>
-<body class="min-h-screen py-6 px-4">
-  <div class="max-w-4xl mx-auto">
-    <header class="vault-header mb-6 card">
-      <div class="flex items-center justify-between">
-        <div>
-          <div class="flex items-center gap-3">
-            <div class="badge">Abdulhamid Vault</div>
-            <h1 class="text-2xl font-bold gold">خزنة الملاحظات والكتب</h1>
-          </div>
-          <p class="muted mt-2">تخزين محلي آمن على جهازك — رفع وإدارة من قبل صاحب الحساب فقط</p>
-        </div>
-        <div class="text-right">
-          <div class="muted text-sm">Built by <strong class="gold">Abdulhamid</strong></div>
-        </div>
-      </div>
-    </header>
+<body class="p-6">
+  <div class="max-w-md mx-auto">
+    <div class="card mb-6">
+      <h1 class="text-2xl font-bold gold mb-2">تسجيل الدخول للمسؤول</h1>
+      <p class="text-sm text-slate-400 mb-4">أدخل رقم الهاتف وكلمة السر الخاصة بالحساب الإداري لعرض لوحة التحكم.</p>
+      <label class="block text-sm mb-1">رقم الهاتف</label>
+      <input type="tel" id="phone" class="input mb-3" placeholder="77XXXXXXX" />
+      <label class="block text-sm mb-1">كلمة السر</label>
+      <input type="password" id="password" class="input mb-4" placeholder="••••••••" />
+      <button class="btn mb-2" onclick="login()">دخول المسؤول</button>
+      <button class="btn btn-secondary" onclick="enterVisitor()">دخول كزائر</button>
+    </div>
 
-    <main id="app">
-      <!-- Login -->
-      <section id="loginView" class="card p-6 mb-6">
-        <h2 class="text-lg font-semibold gold mb-2">تسجيل الدخول للمسؤول</h2>
-        <p class="muted mb-4">أدخل رقم الهاتف وكلمة السر الخاصة بالحساب الإداري لعرض لوحة الرفع.</p>
+    <div id="adminPanel" class="card hidden">
+      <h2 class="text-xl font-bold gold mb-4">لوحة المدير</h2>
+      <input type="file" id="fileInput" multiple class="mb-3" />
+      <button class="btn mb-4" onclick="uploadFiles()">رفع الملفات</button>
+      <div id="fileList" class="space-y-2"></div>
+    </div>
 
-        <div class="grid grid-cols-12 gap-3 items-center">
-          <div class="col-span-3">
-            <label class="text-sm muted">مفتاح الدولة</label>
-            <div class="mt-1 px-3 py-2 rounded-lg input-dark">+967</div>
-          </div>
-          <div class="col-span-9">
-            <label class="text-sm muted">رقم الهاتف</label>
-            <input id="loginPhone" class="mt-1 w-full px-4 py-3 rounded-lg input-dark" type="tel" placeholder="77XXXXXXX" inputmode="numeric"/>
-          </div>
-
-          <div class="col-span-12">
-            <label class="text-sm muted">كلمة السر (المسؤول)</label>
-            <input id="loginPass" class="mt-1 w-full px-4 py-3 rounded-lg input-dark" type="password" placeholder="ادخل كلمة السر" />
-          </div>
-
-          <div class="col-span-12 flex gap-3 mt-3">
-            <button id="btnLogin" class="flex-1 py-3 rounded-lg btn-hero">دخول المسؤول</button>
-            <button id="btnVisitor" class="flex-1 py-3 rounded-lg bg-gray-800 text-white">دخول كزائر</button>
-          </div>
-
-          <div class="col-span-12 text-xs muted mt-3">
-            ملاحظة: كلمة السر الإدارية المطلوبة: <strong class="gold">ab200631</strong>. دخول الزائر محصور في العرض فقط؛ التحميل يتطلّب رمز تنزيل ثلاثي: <strong class="gold">222</strong>.
-          </div>
-        </div>
-      </section>
-
-      <!-- Admin Dashboard -->
-      <section id="adminView" class="hidden card p-6 mb-6">
-        <div class="flex justify-between items-center mb-4">
-          <div>
-            <h3 class="text-xl font-bold gold">لوحة المدير</h3>
-            <div class="muted">الحساب: <span id="adminPhoneText"></span></div>
-          </div>
-          <div class="flex gap-2 items-center">
-            <button id="btnEnableBio" class="px-3 py-2 rounded-lg bg-indigo-700 text-white text-sm">تفعيل بصمة الجهاز</button>
-            <button id="btnLogout" class="px-3 py-2 rounded-lg bg-gray-700 text-white text-sm">تسجيل خروج</button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-6">
-            <div class="p-4 card">
-              <label class="text-sm muted">رفع ملفات (صور / PDF)</label>
-              <input id="fileInput" class="mt-3 w-full" type="file" multiple accept=".pdf,image/*" />
-              <div class="flex gap-2 mt-3">
-                <button id="btnUpload" class="flex-1 py-2 rounded-lg bg-green-600 text-white font-semibold">رفع بعد المصادقة</button>
-                <button id="btnSetDevicePwd" class="py-2 px-3 rounded-lg bg-gray-700 text-white">إعداد كلمة سر الجهاز</button>
-              </div>
-              <p class="text-xs muted mt-2">عند تمكين البصمة، سيُطلب المصادقة عند كل عملية رفع. إن لم يدعم جهازك البصمة، استخدم زر إعداد كلمة سر الجهاز كبديل.</p>
-            </div>
-
-            <div class="p-4 card mt-4">
-              <label class="text-sm muted">إدارة أرقام العرض</label>
-              <div class="flex gap-2 mt-2">
-                <input id="newAllowed" placeholder="مثال: 771234567" class="flex-1 px-3 py-2 rounded-lg input-dark" />
-                <button id="addAllowed" class="px-3 py-2 rounded-lg bg-green-500 text-black">إضافة</button>
-              </div>
-              <ul id="allowedList" class="mt-3 space-y-2 text-sm muted"></ul>
-            </div>
-          </div>
-
-          <div class="col-span-6">
-            <div class="p-4 card h-full flex flex-col">
-              <div class="flex justify-between items-center mb-3">
-                <h4 class="gold font-semibold">ملفاتك</h4>
-                <div class="muted text-sm">محفوظ محلياً</div>
-              </div>
-              <div id="filesGrid" class="grid grid-cols-2 gap-3 overflow-auto" style="max-height:420px"></div>
-
-              <div class="mt-4 flex gap-2">
-                <button id="btnExport" class="flex-1 py-2 rounded-lg bg-gray-800 text-white">تصدير JSON</button>
-                <button id="btnClear" class="py-2 px-3 rounded-lg bg-red-600 text-white">مسح محلي</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Viewer Dashboard -->
-      <section id="viewerView" class="hidden card p-6 mb-6">
-        <div class="flex justify-between items-center mb-4">
-          <div>
-            <h3 class="text-xl font-bold gold">لوحة العرض</h3>
-            <div class="muted">المستخدم: <span id="viewerPhoneText"></span></div>
-          </div>
-          <div class="muted text-sm">عرض وتنزيل مشروط برمز تنزيل ثلاثي</div>
-        </div>
-
-        <div class="p-4 card">
-          <div id="viewerFilesGrid" class="grid grid-cols-2 gap-3"></div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- Modals -->
-  <div id="modal" class="fixed inset-0 hidden items-center justify-center z-50">
-    <div class="absolute inset-0 modal-backdrop"></div>
-    <div class="relative max-w-xl w-full mx-4 p-4 card">
-      <div id="modalBody"></div>
+    <div id="visitorPanel" class="card hidden">
+      <h2 class="text-xl font-bold gold mb-4">لوحة الزائر</h2>
+      <div id="visitorFiles" class="space-y-2"></div>
     </div>
   </div>
 
-<script>
-/* قاعدة بيانات محلية وهياكل */
-const DB_NAME = 'abdul_vault_db_v2';
-const STORE_FILES = 'files';
-const STORE_META = 'meta';
-let db;
+  <script>
+    const adminPassword = "ab200631";
+    const downloadCode = "222";
+    let files = [];
 
-function openDB(){
-  return new Promise((res,rej)=>{
-    const r = indexedDB.open(DB_NAME,1);
-    r.onupgradeneeded = e => {
-      const idb = e.target.result;
-      if (!idb.objectStoreNames.contains(STORE_FILES)) idb.createObjectStore(STORE_FILES,{keyPath:'id'});
-      if (!idb.objectStoreNames.contains(STORE_META)) idb.createObjectStore(STORE_META,{keyPath:'key'});
-    };
-    r.onsuccess = e => { db = e.target.result; res(db); };
-    r.onerror = e => rej(e);
-  });
-}
-function idbPut(store,val){ return new Promise((res,rej)=>{ const tx=db.transaction(store,'readwrite'); const st=tx.objectStore(store); const rq=st.put(val); rq.onsuccess=()=>res(true); rq.onerror=e=>rej(e); }); }
-function idbGet(store,key){ return new Promise((res,rej)=>{ const tx=db.transaction(store,'readonly'); const st=tx.objectStore(store); const rq=st.get(key); rq.onsuccess=()=>res(rq.result); rq.onerror=e=>rej(e); }); }
-function idbGetAll(store){ return new Promise((res,rej)=>{ const tx=db.transaction(store,'readonly'); const st=tx.objectStore(store); const rq=st.getAll(); rq.onsuccess=()=>res(rq.result || []); rq.onerror=e=>rej(e); }); }
-function idbDelete(store,key){ return new Promise((res,rej)=>{ const tx=db.transaction(store,'readwrite'); const st=tx.objectStore(store); const rq=st.delete(key); rq.onsuccess=()=>res(true); rq.onerror=e=>rej(e); }); }
-
-/* عناصر DOM */
-const loginView = document.getElementById('loginView');
-const adminView = document.getElementById('adminView');
-const viewerView = document.getElementById('viewerView');
-const btnLogin = document.getElementById('btnLogin');
-const btnVisitor = document.getElementById('btnVisitor');
-const loginPhone = document.getElementById('loginPhone');
-const loginPass = document.getElementById('loginPass');
-const adminPhoneText = document.getElementById('adminPhoneText');
-const viewerPhoneText = document.getElementById('viewerPhoneText');
-
-const fileInput = document.getElementById('fileInput');
-const btnUpload = document.getElementById('btnUpload');
-const btnSetDevicePwd = document.getElementById('btnSetDevicePwd');
-const btnEnableBio = document.getElementById('btnEnableBio');
-
-const filesGrid = document.getElementById('filesGrid');
-const viewerFilesGrid = document.getElementById('viewerFilesGrid');
-const allowedList = document.getElementById('allowedList');
-const newAllowed = document.getElementById('newAllowed');
-const addAllowed = document.getElementById('addAllowed');
-
-const btnExport = document.getElementById('btnExport');
-const btnClear = document.getElementById('btnClear');
-const btnLogout = document.getElementById('btnLogout');
-
-const modal = document.getElementById('modal');
-const modalBody = document.getElementById('modalBody');
-
-let currentUser = null;
-const ADMIN_PASSWORD = 'ab200631'; // كلمة السر المطلوبة للمسؤول
-const DOWNLOAD_CODE = '222'; // رمز التحميل للزوار
-
-/* meta keys */
-const META_ALLOWED = 'allowedNumbers';
-const META_BIO = 'bioEnabled';
-const META_DEVICE_PWD = 'devicePassword';
-
-/* init */
-(async function init(){
-  await openDB();
-  // ensure allowedNumbers exists (بدون أرقام افتراضية)
-  const rec = await idbGet(STORE_META, META_ALLOWED);
-  if (!rec) await idbPut(STORE_META, { key: META_ALLOWED, value: [] });
-  // set bio flag false if not present
-  const bio = await idbGet(STORE_META, META_BIO);
-  if (!bio) await idbPut(STORE_META, { key: META_BIO, value: false });
-})();
-
-/* مساعدة عرض المودال */
-function showModal(html){
-  modalBody.innerHTML = html;
-  modal.classList.remove('hidden');
-}
-function closeModal(){
-  modal.classList.add('hidden');
-  modalBody.innerHTML = '';
-}
-modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-
-/* إدارة الأرقام المصرح لها */
-async function renderAllowed(){
-  const rec = await idbGet(STORE_META, META_ALLOWED);
-  const list = (rec && rec.value) ? rec.value : [];
-  allowedList.innerHTML = '';
-  list.forEach(n=>{
-    const li = document.createElement('li');
-    li.className = 'flex justify-between items-center bg-white/3 p-2 rounded-lg';
-    li.innerHTML = `<span class="text-sm">${n}</span>
-      <div><button data-num="${n}" class="px-2 py-1 rounded-lg bg-red-600 text-sm">حذف</button></div>`;
-    allowedList.appendChild(li);
-  });
-  allowedList.querySelectorAll('button').forEach(b=>{
-    b.addEventListener('click', async e=>{
-      const num = e.target.dataset.num;
-      const rec = await idbGet(STORE_META, META_ALLOWED);
-      let arr = (rec && rec.value) ? rec.value : [];
-      arr = arr.filter(x=>x!==num);
-      await idbPut(STORE_META, { key: META_ALLOWED, value: arr });
-      await renderAllowed();
-      await renderFilesGrid();
-    });
-  });
-}
-addAllowed.addEventListener('click', async ()=>{
-  const v = newAllowed.value.trim();
-  if (!v) return alert('أدخل رقماً صحيحاً.');
-  const rec = await idbGet(STORE_META, META_ALLOWED);
-  const arr = (rec && rec.value) ? rec.value : [];
-  if (!arr.includes(v)) arr.push(v);
-  await idbPut(STORE_META, { key: META_ALLOWED, value: arr });
-  newAllowed.value = '';
-  await renderAllowed();
-});
-
-/* تسجيل دخول */
-btnLogin.addEventListener('click', async ()=>{
-  const phone = (loginPhone.value||'').replace(/\D/g,'').trim();
-  const pass = (loginPass.value||'').trim();
-  if (!phone) return alert('ادخل رقم الهاتف.');
-  if (pass !== ADMIN_PASSWORD) return alert('كلمة السر خاطئة.');
-  currentUser = { phone, role: 'admin' };
-  await enterAdmin();
-});
-btnVisitor.addEventListener('click', async ()=>{
-  const phone = 'guest';
-  currentUser = { phone, role: 'viewer' };
-  await enterViewer();
-});
-
-async function enterAdmin(){
-  loginView.classList.add('hidden');
-  adminView.classList.remove('hidden');
-  viewerView.classList.add('hidden');
-  adminPhoneText.textContent = currentUser.phone;
-  await renderAllowed();
-  await renderFilesGrid();
-}
-async function enterViewer(){
-  loginView.classList.add('hidden');
-  adminView.classList.add('hidden');
-  viewerView.classList.remove('hidden');
-  viewerPhoneText.textContent = 'زائر';
-  await renderViewerFiles();
-}
-
-/* تسجيل خروج */
-btnLogout.addEventListener('click', ()=>{
-  currentUser = null;
-  loginView.classList.remove('hidden');
-  adminView.classList.add('hidden');
-  viewerView.classList.add('hidden');
-  loginPhone.value = '';
-  loginPass.value = '';
-});
-
-/* رفع الملفات: يتطلب مصادقة الجهاز (بصمة) أو كلمة سر جهاز */
-btnUpload.addEventListener('click', async ()=>{
-  if (!currentUser || currentUser.role !== 'admin') return alert('المصادقة المطلوبة كمدير.');
-  // تحقق ما إذا تم تفعيل البصمة
-  const bioRec = await idbGet(STORE_META, META_BIO);
-  const bioEnabled = bioRec && bioRec.value === true;
-  let authOk = false;
-  if (bioEnabled && window.PublicKeyCredential){
-    try {
-      // محاولة مصادقة سريعة عبر WebAuthn (محلية، تحدي عشوائي)
-      const challenge = new Uint8Array(32);
-      crypto.getRandomValues(challenge);
-      // طلب مصادقة فقط (get) ممكن أن يفشل إذا لم يقم المستخدم بإنشاء cred مسبقاً
-      const cred = await navigator.credentials.get({ publicKey: { challenge: challenge, timeout:60000, userVerification: "preferred" }});
-      if (cred) authOk = true;
-    } catch (e){
-      console.warn('WebAuthn failed or not set up', e);
-      // سنطلب بديلاً كلمة سر الجهاز
+    function login() {
+      const phone = document.getElementById("phone").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      if (pass === adminPassword) {
+        document.getElementById("adminPanel").classList.remove("hidden");
+        document.getElementById("visitorPanel").classList.add("hidden");
+      } else {
+        alert("كلمة السر غير صحيحة.");
+      }
     }
-  }
-  if (!authOk){
-    // fallback: كلمة سر الجهاز
-    const devicePwdRec = await idbGet(STORE_META, META_DEVICE_PWD);
-    if (!devicePwdRec || !devicePwdRec.value){
-      // طلب تعيين كلمة سر جهاز الآن
-      const set = confirm('لم تُعَد كلمة سر جهاز بعد. تريد تعيينها الآن كبديل للمصادقة؟');
-      if (!set) return alert('لا يمكن رفع الملفات بدون مصادقة.');
-      const pwd = prompt('أدخل كلمة سر الجهاز (سيُطلب لاحقاً عند الرفع)').trim();
-      if (!pwd) return alert('كلمة السر مطلوبة.');
-      await idbPut(STORE_META, { key: META_DEVICE_PWD, value: pwd });
-      authOk = true;
-    } else {
-      const attempt = prompt('أدخل كلمة سر جهازك للتحقق').trim();
-      if (attempt === (devicePwdRec && devicePwdRec.value)) authOk = true;
-      else { alert('كلمة سر الجهاز خاطئة.'); return; }
+
+    function enterVisitor() {
+      document.getElementById("adminPanel").classList.add("hidden");
+      document.getElementById("visitorPanel").classList.remove("hidden");
+      renderVisitorFiles();
     }
-  }
 
-  if (!authOk) return alert('فشل التحقق. لم يتم رفع الملفات.');
-
-  const files = fileInput.files;
-  if (!files || files.length === 0) return alert('اختر ملفاً للرفع أولاً.');
-  for (const f of files){
-    // قراءة كـ dataURL وتخزين
-    await new Promise((resolve,reject)=>{
-      const r = new FileReader();
-      r.onload = async e => {
-        const id = 'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
-        const obj = { id, name: f.name, type: f.type, size: f.size, dataURL: e.target.result, createdAt: Date.now() };
-        await idbPut(STORE_FILES, obj);
-        resolve();
-      };
-      r.onerror = reject;
-      r.readAsDataURL(f);
-    });
-  }
-  fileInput.value = '';
-  alert('تم رفع الملفات بعد المصادقة.');
-  await renderFilesGrid();
-});
-
-/* تمكين البصمة: نحاول حفظ علم فقط (بدون خادم) - نضع العلم true إن نجحت محاولة get لاحقة */
-btnEnableBio.addEventListener('click', async ()=>{
-  if (!window.PublicKeyCredential){
-    return alert('البصمة غير مدعومة على متصفحك. ستستخدم كلمة سر الجهاز كبديل.');
-  }
-  // ننفذ محاولة get صغيرة لتأكيد دعم المصادقة المنصة
-  try {
-    const challenge = new Uint8Array(32);
-    crypto.getRandomValues(challenge);
-    // محاولة طلب بسيطة (ستفشل عادة إذا لم تُنشأ cred) لكن إن نجحت فالمتصفح يقبل المصادقة
-    await navigator.credentials.get({ publicKey: { challenge: challenge, timeout:60000, userVerification: "preferred" }});
-    // إذا وصلنا هنا، اعتبرنا أن WebAuthn متاحة
-    await idbPut(STORE_META, { key: META_BIO, value: true });
-    alert('تم تفعيل مصادقة الجهاز (حاولت واجهة WebAuthn). عند الرفع سيطلب المصادقة إن كانت متوفرة.');
-  } catch (e){
-    // قد يفشل عادة لأنّه لا توجد بيانات اعتماد مسجلة، لكن هذا لا يمنع استخدام المصادقة إذا أنشأ المستخدم اعتماداً نظامياً خارج التطبيق.
-    const ok = confirm('التجربة الأولية لبصمة الجهاز لم تُنجز. هل تريد تفعيل خيار المصادقة البيومترية كتفضيل (سيحاول التطبيق استخدامها عند الرفع)؟');
-    if (ok) {
-      await idbPut(STORE_META, { key: META_BIO, value: true });
-      alert('تم وضع خيار البصمة كتفضيل. إذا دعمت أجهزة المستخدم WebAuthn سيتم طلبها عند الرفع.');
+    function uploadFiles() {
+      const input = document.getElementById("fileInput");
+      const selectedFiles = Array.from(input.files);
+      selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+      document.getElementById("visitorPanel").classList.remove("hidden");
+      renderVisitorFiles();
     }
-  }
-  await renderAllowed();
-});
 
-/* تعيين كلمة سر الجهاز */
-btnSetDevicePwd.addEventListener('click', async ()=>{
-  const pwd = prompt('أدخل كلمة سر الجهاز (ستُستخدم إن لم تتوفر بصمة)').trim();
-  if (!pwd) return alert('لم تدخل كلمة.');
-  await idbPut(STORE_META, { key: META_DEVICE_PWD, value: pwd });
-  alert('تم حفظ كلمة سر الجهاز محلياً.');
-});
-
-/* عرض الملفات للمدير */
-async function renderFilesGrid(){
-  const list = await idbGetAll(STORE_FILES);
-  filesGrid.innerHTML = '';
-  if (!list || list.length===0){
-    filesGrid.innerHTML = `<div class="col-span-2 text-sm muted p-4">لا توجد ملفات مرفوعة بعد.</div>`;
-    viewerFilesGrid.innerHTML = filesGrid.innerHTML;
-    return;
-  }
-  list.sort((a,b)=>b.createdAt - a.createdAt);
-  for (const f of list){
-    const el = document.createElement('div');
-    el.className = 'file-card bg-white/3 p-3 rounded-lg';
-    const thumb = f.type.startsWith('image/') ? `<img src="${f.dataURL}" class="w-full h-36 object-cover rounded-md mb-2">` : `<div class="w-full h-36 flex items-center justify-center bg-white/2 rounded-md mb-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>`;
-    el.innerHTML = `${thumb}
-      <div class="flex justify-between items-center">
-        <div class="text-sm font-medium truncate" title="${f.name}">${f.name}</div>
-        <div class="flex gap-2">
-          <button data-id="${f.id}" class="previewFile bg-indigo-700 text-white px-2 py-1 rounded-lg text-xs">معاينة</button>
-          <a href="${f.dataURL}" download="${f.name}" class="bg-green-500 text-black px-2 py-1 rounded-lg text-xs">تحميل</a>
-          <button data-id="${f.id}" class="delFile bg-red-600 text-white px-2 py-1 rounded-lg text-xs">حذف</button>
-        </div>
-      </div>
-      <div class="text-xs muted mt-2">${new Date(f.createdAt).toLocaleString()}</div>`;
-    filesGrid.appendChild(el);
-  }
-  document.querySelectorAll('.delFile').forEach(b=> b.addEventListener('click', async e=>{
-    if (!confirm('هل تريد حذف هذا الملف؟')) return;
-    const id = e.target.dataset.id;
-    await idbDelete(STORE_FILES,id);
-    await renderFilesGrid();
-  }));
-  document.querySelectorAll('.previewFile').forEach(b=> b.addEventListener('click', e=> openPreview(e.target.dataset.id)));
-  await renderViewerFiles();
-}
-
-/* عرض ملفات للزائر (بدون زر تحميل مباشر - يطلب رمز 222) */
-async function renderViewerFiles(){
-  const list = await idbGetAll(STORE_FILES);
-  viewerFilesGrid.innerHTML = '';
-  if (!list || list.length===0){
-    viewerFilesGrid.innerHTML = `<div class="col-span-2 text-sm muted p-4">لا توجد ملفات للعرض.</div>`;
-    return;
-  }
-  list.sort((a,b)=>b.createdAt - a.createdAt);
-  for (const f of list){
-    const el = document.createElement('div');
-    el.className = 'file-card bg-white/3 p-3 rounded-lg';
-    const thumb = f.type.startsWith('image/') ? `<img src="${f.dataURL}" class="w-full h-36 object-cover rounded-md mb-2">` : `<div class="w-full h-36 flex items-center justify-center bg-white/2 rounded-md mb-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>`;
-    el.innerHTML = `${thumb}
-      <div class="flex justify-between items-center">
-        <div class="text-sm font-medium truncate" title="${f.name}">${f.name}</div>
-        <div class="flex gap-2">
-          <button data-id="${f.id}" class="viewerPreview bg-indigo-700 text-white px-2 py-1 rounded-lg text-xs">معاينة</button>
-          <button data-id="${f.id}" class="viewerDownload bg-yellow-400 text-black px-2 py-1 rounded-lg text-xs">طلب تنزيل</button>
-        </div>
-      </div>
-      <div class="text-xs muted mt-2">${new Date(f.createdAt).toLocaleString()}</div>`;
-    viewerFilesGrid.appendChild(el);
-  }
-  document.querySelectorAll('.viewerPreview').forEach(b=> b.addEventListener('click', e=> openPreview(e.target.dataset.id)));
-  document.querySelectorAll('.viewerDownload').forEach(b=> b.addEventListener('click', e=> attemptViewerDownload(e.target.dataset.id)));
-}
-
-/* معاينة ملفات (مشتركة للجميع) */
-async function openPreview(id){
-  const rec = await idbGet(STORE_FILES, id);
-  if (!rec) return alert('ملف غير موجود.');
-  const content = [];
-  content.push(`<div class="flex justify-between items-center mb-3">`);
-  content.push(`<div><h4 class="gold font-semibold">${rec.name}</h4><div class="muted text-sm">${new Date(rec.createdAt).toLocaleString()}</div></div>`);
-  content.push(`<div><button id="closeM" class="px-3 py-1 rounded-lg bg-gray-800 text-white">إغلاق</button></div>`);
-  content.push(`</div>`);
-  if (rec.type.startsWith('image/')) content.push(`<img src="${rec.dataURL}" class="w-full rounded-md" />`);
-  else if (rec.type === 'application/pdf' || rec.name.toLowerCase().endsWith('.pdf')) content.push(`<embed src="${rec.dataURL}" type="application/pdf" style="width:100%;height:420px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)"/>`);
-  else content.push(`<div class="p-6 muted">نوع الملف غير مدعوم للعرض. استخدم زر التنزيل.</div>`);
-  content.push(`<div class="mt-3 flex gap-2"><a id="modalDownload" class="px-3 py-2 rounded-lg bg-green-600 text-black">تحميل</a></div>`);
-  showModal(content.join(''));
-  document.getElementById('closeM').addEventListener('click', closeModal);
-  // التحميل في المودال يخضع لنفس قواعد الزائر: إذا المشاهد زائر يحتاج رمز 222
-  const dl = document.getElementById('modalDownload');
-  dl.addEventListener('click', async ()=>{
-    if (currentUser && currentUser.role === 'admin'){
-      // تحميل فوري للمدير
-      const a = document.createElement('a'); a.href = rec.dataURL; a.download = rec.name; document.body.appendChild(a); a.click(); a.remove();
-    } else {
-      // زائر: يطلب رمز 222
-      const code = prompt('أدخل رمز تنزيل ثلاثي للحصول على الملف');
-      if (code === DOWNLOAD_CODE){
-        const a = document.createElement('a'); a.href = rec.dataURL; a.download = rec.name; document.body.appendChild(a); a.click(); a.remove();
-        closeModal();
-      } else alert('رمز التنزيل خاطئ.');
+    function uploadFiles() {
+      const input = document.getElementById("fileInput");
+      const selectedFiles = Array.from(input.files);
+      selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          files.push({
+            name: file.name,
+            type: file.type,
+            data: e.target.result,
+            time: new Date().toLocaleString()
+          });
+          renderAdminFiles();
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = "";
     }
-  });
-}
 
-/* محاولة تنزيل من لوحة الزائر */
-async function attemptViewerDownload(id){
-  const rec = await idbGet(STORE_FILES, id);
-  if (!rec) return alert('ملف غير موجود.');
-  const code = prompt('أدخل رمز تنزيل ثلاثي للحصول على الملف');
-  if (code === DOWNLOAD_CODE){
-    const a = document.createElement('a'); a.href = rec.dataURL; a.download = rec.name; document.body.appendChild(a); a.click(); a.remove();
-  } else alert('رمز التنزيل خاطئ.');
-}
+    function renderAdminFiles() {
+      const list = document.getElementById("fileList");
+      list.innerHTML = "";
+      files.forEach((file, index) => {
+        const div = document.createElement("div");
+        div.className = "bg-slate-800 p-3 rounded";
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span>${file.name}</span>
+            <a href="${file.data}" download="${file.name}" class="text-yellow-400 text-sm">تحميل</a>
+          </div>
+          <div class="text-xs text-slate-400 mt-1">${file.time}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-/* تصدير ومسح */
-btnExport.addEventListener('click', async ()=>{
-  const files = await idbGetAll(STORE_FILES);
-  const meta = await idbGet(STORE_META, META_ALLOWED);
-  const exportObj = { files, allowed: (meta && meta.value) ? meta.value : [] };
-  const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'abdul_vault_export.json'; document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-});
-btnClear.addEventListener('click', async ()=>{
-  if (!confirm('سيتم مسح كل البيانات المحلية. موافق؟')) return;
-  await new Promise((res,rej)=>{
-    const tx = db.transaction([STORE_FILES, STORE_META], 'readwrite');
-    tx.objectStore(STORE_FILES).clear();
-    tx.objectStore(STORE_META).clear();
-    tx.oncomplete = ()=> res();
-    tx.onerror = e => rej(e);
-  });
-  location.reload();
-});
+    function renderVisitorFiles() {
+      const list = document.getElementById("visitorFiles");
+      list.innerHTML = "";
+      files.forEach((file, index) => {
+        const div = document.createElement("div");
+        div.className = "bg-slate-800 p-3 rounded";
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span>${file.name}</span>
+            <button onclick="requestDownload(${index})" class="text-yellow-400 text-sm">طلب تحميل</button>
+          </div>
+          <div class="text-xs text-slate-400 mt-1">${file.time}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-/* رَندَر في البداية بعد التهيئة */
-(async function bootRender(){
-  // لا تعرض شيئاً حتى يتم فتح DB في init()
-  // وضع افتراضي: إظهار login
-})();
-
-</script>
-</body>
-</html>
+    function requestDownload(index) {
+      const code = prompt("أدخل رمز التحقق لتنزيل الملف:");
+      if (code === downloadCode) {
+        const file = files[index];
+        const a = document.createElement("a");
+        a.href = file.data;
+        a.download = file.name;
+        document.body.appendChild(a);
