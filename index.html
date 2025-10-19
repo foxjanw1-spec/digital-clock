@@ -7,15 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      background: radial-gradient(circle at top left, #0f172a, #1e293b);
       font-family: 'Segoe UI', sans-serif;
       color: #f1f5f9;
     }
     .card {
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
       padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .gold {
       color: #facc15;
@@ -24,7 +26,7 @@
       background: rgba(255, 255, 255, 0.1);
       border: none;
       padding: 0.75rem;
-      border-radius: 8px;
+      border-radius: 10px;
       width: 100%;
       color: #f1f5f9;
     }
@@ -32,12 +34,16 @@
       color: #94a3b8;
     }
     .btn {
-      background: #facc15;
+      background: linear-gradient(to right, #facc15, #fbbf24);
       color: #1e293b;
       font-weight: bold;
       padding: 0.75rem;
-      border-radius: 8px;
+      border-radius: 10px;
       width: 100%;
+      transition: transform 0.2s;
+    }
+    .btn:hover {
+      transform: scale(1.03);
     }
     .btn-secondary {
       background: #334155;
@@ -74,14 +80,21 @@
   <script>
     const adminPassword = "ab200631";
     const downloadCode = "222";
-    let files = [];
+
+    function saveFiles(files) {
+      localStorage.setItem("vaultFiles", JSON.stringify(files));
+    }
+
+    function loadFiles() {
+      return JSON.parse(localStorage.getItem("vaultFiles") || "[]");
+    }
 
     function login() {
-      const phone = document.getElementById("phone").value.trim();
       const pass = document.getElementById("password").value.trim();
       if (pass === adminPassword) {
         document.getElementById("adminPanel").classList.remove("hidden");
         document.getElementById("visitorPanel").classList.add("hidden");
+        renderAdminFiles();
       } else {
         alert("كلمة السر غير صحيحة.");
       }
@@ -96,6 +109,7 @@
     function uploadFiles() {
       const input = document.getElementById("fileInput");
       const selectedFiles = Array.from(input.files);
+      const files = loadFiles();
       selectedFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -105,6 +119,7 @@
             data: e.target.result,
             time: new Date().toLocaleString()
           });
+          saveFiles(files);
           renderAdminFiles();
         };
         reader.readAsDataURL(file);
@@ -113,6 +128,7 @@
     }
 
     function renderAdminFiles() {
+      const files = loadFiles();
       const list = document.getElementById("fileList");
       list.innerHTML = "";
       files.forEach((file, index) => {
@@ -130,6 +146,7 @@
     }
 
     function renderVisitorFiles() {
+      const files = loadFiles();
       const list = document.getElementById("visitorFiles");
       list.innerHTML = "";
       files.forEach((file, index) => {
@@ -149,6 +166,7 @@
     function requestDownload(index) {
       const code = prompt("أدخل رمز التحقق لتنزيل الملف:");
       if (code === downloadCode) {
+        const files = loadFiles();
         const file = files[index];
         const a = document.createElement("a");
         a.href = file.data;
