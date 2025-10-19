@@ -289,4 +289,162 @@ async function isAllowed(phone) {
 }
 
 async function bootForUser(isPreview=false) {
-  loginView.class
+  loginView.classList.add('hidden');
+  if (currentUser.role === 'admin') {
+    adminView.classList.remove('hidden');
+    viewerView.classList.add('hidden');
+    adminPhoneText.textContent = currentUser.phone;
+    await renderAllowed();
+    await renderFilesGrid();
+  } else {
+    adminView.classList.add('hidden');
+    viewerView.classList.remove('hidden');
+    viewerPhoneText.textContent = currentUser.phone === 'guest' ? 'زائر' : currentUser.phone;
+    await renderViewerFiles();
+  }
+}
+
+/* رفع ملفات */
+btnUpload.addEventListener('click', async () => {
+  const files = fileInput.files;
+  if (!files || files.length === 0) return alert('اختر ملفاً للرفع.');
+  for (const f of files) {
+    const reader = new FileReader();
+    await new Promise((resolve, reject) => {
+      reader.onload = async e => {
+        await saveFileObject(f.name, f.type, f.size, e.target.result);
+        resolve();
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(f);
+    });
+  }
+  fileInput.value = '';
+  await renderFilesGrid();
+  alert('تم رفع الملفات محلياً.');
+});
+
+/* عرض الملفات في لوحة المدير */
+async function renderFilesGrid() {
+  const list = await loadFiles();
+  filesGrid.innerHTML = '';
+  if (list.length === 0) {
+    filesGrid.innerHTML = `<div class="col-span-2 text-sm text-gray-600 p-4">لا توجد ملفات مرفوعة بعد.</div>`;
+    viewerFilesGrid.innerHTML = filesGrid.innerHTML;
+    return;
+  }
+  list.sort((a,b)=>b.createdAt-a.createdAt);
+  for (const f of list) {
+    const el = document.createElement('div');
+    el.className = 'file-card bg-white p-3 rounded-lg';
+    const thumb = f.type.startsWith('image/') ? `<img src="${f.dataURL}" class="w-full h-36 object-cover rounded-md mb-2">` : `<div class="w-full h-36 flex items-center justify-center bg-gray-100 rounded-md mb-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2" /></svg></div>`;
+    el.innerHTML = `${thumb}
+      <div class="flex justify-between items-center">
+        <div class="text-sm font-medium text-gray-800 truncate" title="${f.name}">${f.name}</div>
+        <div class="flex gap-2">
+          <button data-id="${f.id}" class="previewFile bg-indigo-600 text-white px-2 py-1 rounded-lg text-xs">معاينة</button>
+          <button data-id="${f.id}" class="deleteFile bg-red-500 text-white px-2 py-1 rounded-lg text-xs">حذف</button>
+        </div>
+      </div>
+      <div class="text-xs text-gray-500 mt-2">${new Date(f.createdAt).toLocaleString()}</div>`;
+    filesGrid.appendChild(el);
+  }
+  // ربط الأزرار
+  document.querySelectorAll('.previewFile').forEach(b => b.addEventListener('click', e => openPreviewById(e.target.dataset.id)));
+  document.querySelectorAll('.deleteFile').forEach(b => b.addEventListener('click', async e => {
+    const id = e.target.dataset.id;
+    if (!confirm('هل تريد حذف هذا الملف؟')) return;
+    await idbDelete(STORE_FILES, id);
+    await renderFilesGrid();
+    alert('تم الحذف.');
+  }));
+  await renderViewerFiles();
+}
+
+/* عرض ملفات للزائر/المشاهد */
+async function renderViewerFiles() {
+  const list = await loadFiles();
+  viewerFilesGrid.innerHTML = '';
+  if (list.length === 0) {
+    viewerFilesGrid.innerHTML = `<div class="col-span-2 text-sm text-gray-600 p-4">لا توجد ملفات للعرض.</div>`;
+    return;
+  }
+  list.sort((a,b)=>b.createdAt-a.createdAt);
+  for (const f of list) {
+    const el = document.createElement('div');
+    el.className = 'file-card bg-white p-3 rounded-lg';
+    const thumb = f.type.startsWith('image/') ? `<img src="${f.dataURL}" class="w-full h-36 object-cover rounded-md mb-2">` : `<div class="w-full h-36 flex items-center justify-center bg-gray-100 rounded-md mb-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2" /></svg></div>`;
+    el.innerHTML = `${thumb}
+      <div class="flex justify-between items-center">
+        <div class="text-sm font-medium text-gray-800 truncate" title="${f.name}">${f.name}</div>
+        <div class="flex gap-2">
+          <button data-id="${f.id}" class="viewerPreview bg-indigo-600 text-white px-2 py-1 rounded-lg text-xs">معاينة</button>
+          <a href="${f.dataURL}" download="${f.name}" class="bg-green-500 text-white px-2 py-1 rounded-lg text-xs">تحميل</a>
+        </div>
+      </div>
+      <div class="text-xs text-gray-500 mt-2">${new Date(f.createdAt).toLocaleString()}</div>`;
+    viewerFilesGrid.appendChild(el);
+  }
+  document.querySelectorAll('.viewerPreview').forEach(b => b.addEventListener('click', e => openPreviewById(e.target.dataset.id)));
+}
+
+/* معاينة ملفات */
+async function openPreviewById(id) {
+  const rec = await idbGet(STORE_FILES, id);
+  if (!rec) return alert('ملف غير موجود.');
+  previewTitle.textContent = rec.name;
+  downloadBtn.href = rec.dataURL;
+  downloadBtn.download = rec.name;
+  if (rec.type.startsWith('image/')) {
+    previewContent.innerHTML = `<img src="${rec.dataURL}" class="w-full rounded-md" />`;
+  } else if (rec.type === 'application/pdf' || rec.name.toLowerCase().endsWith('.pdf')) {
+    previewContent.innerHTML = `<embed src="${rec.dataURL}" type="application/pdf" class="pdf-preview" />`;
+  } else {
+    previewContent.innerHTML = `<div class="p-6 text-sm text-gray-700">نوع الملف غير معروض مسبقاً. استخدم زر التحميل.</div>`;
+  }
+  previewModal.classList.remove('hidden');
+}
+
+closePreview.addEventListener('click', ()=> previewModal.classList.add('hidden'));
+
+/* تصدير ومسح */
+btnExport.addEventListener('click', async () => {
+  const files = await loadFiles();
+  const metaRec = await idbGet(STORE_META, 'allowedNumbers');
+  const exportObj = { files, meta: metaRec ? metaRec.value : [] };
+  const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'abdul_cloud_export.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+btnClear.addEventListener('click', async () => {
+  if (!confirm('ستُمسح كل البيانات المحلية بما فيها الملفات والأرقام. هل أنت متأكد؟')) return;
+  // حذف جميع العناصر من stores
+  await new Promise((res,rej)=> {
+    const tx = db.transaction([STORE_FILES, STORE_META], 'readwrite');
+    tx.objectStore(STORE_FILES).clear();
+    tx.objectStore(STORE_META).clear();
+    tx.oncomplete = ()=> res();
+    tx.onerror = e => rej(e);
+  });
+  location.reload();
+});
+
+/* زر فتح التخزين المحلي يرسل المستخدم لعرض الملفات الحالية */
+document.getElementById('btnOpenStorage').addEventListener('click', async ()=> { await renderFilesGrid(); alert('تم فتح المجلد المحلي للعرض.'); });
+
+/* تهيئة التطبيق */
+(async function init(){
+  await openDB();
+  await ensureInitialMeta();
+  // عرض Login افتراضياً
+})();
+</script>
+</body>
+</html>
