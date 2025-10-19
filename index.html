@@ -1,291 +1,556 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ساعة عبدالحميد</title>
-  <meta name="description" content="ساعة رقمية عربية بتنسيق 12/24 ووضع ليلي/نهاري مع اسم مزخرف قابل للتعديل وتأثيرات صوتية."/>
-  <meta name="keywords" content="ساعة رقمية, ساعة عربية, ساعة عبدالحميد, ساعة متجاوبة, زخرفة عربية, خط رقعة">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ساعة رقمية متطورة - من إعداد عبد الحميد</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Cairo:wght@500;700&family=Amiri&display=swap" rel="stylesheet">
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
 
-  <style>
-    :root{
-      --bg-dark:#070707; --muted:#bdbdbd; --accent:#00e5ff;
-      --btn-bg:linear-gradient(135deg,#00e5ff 0%,#7b61ff 100%);
-      --radius:14px;
-    }
-    html,body{height:100%;margin:0;padding:0;background:
-      radial-gradient(ellipse at 10% 20%, rgba(7,7,7,0.8) 0%, rgba(15,15,15,1) 40%), var(--bg-dark);
-      font-family:'Cairo',sans-serif;color:#fff;direction:rtl}
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
-    .card{width:100%;max-width:980px;border-radius:var(--radius);padding:22px;background:
-      linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow:0 8px 30px rgba(2,6,23,0.7);backdrop-filter:blur(6px);position:relative}
-    .top-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:62px;height:62px;border-radius:10px;background:linear-gradient(135deg,#00e5ff,#7b61ff);
-      display:flex;align-items:center;justify-content:center;color:#001;font-weight:900;font-family:'Orbitron'}
-    .brand h1{margin:0;font-size:20px;color:var(--accent);font-weight:700}
-    .center{display:flex;gap:24px;align-items:center;justify-content:space-between;margin-top:18px;flex-wrap:wrap}
-    .clock-wrap{flex:1 1 420px;min-width:260px;display:flex;flex-direction:column;align-items:center;gap:8px}
-    .clock{font-family:'Orbitron',sans-serif;font-weight:700;font-size:clamp(48px,12vw,140px);
-      letter-spacing:10px;padding:16px 24px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      text-align:center;position:relative}
-    .clock::after{content:attr(data-time);display:block;font-size:.18em;height:0;overflow:visible;opacity:.16;transform:translateY(8px) scaleY(-1);filter:blur(6px)}
-    .date{color:var(--muted);font-size:clamp(14px,2.5vw,20px);font-family:'Amiri',serif;margin-top:6px}
-    .display-name{font-size:24px;color:var(--accent);font-family:'Amiri',serif;margin-top:6px}
-    .controls{width:320px;min-width:220px;display:flex;flex-direction:column;gap:12px}
-    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:12px}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:600}
-    .input,.select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:inherit}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;
-      color:#001;background:var(--btn-bg);box-shadow:0 10px 30px rgba(11,18,30,0.6);font-weight:700}
-    .btn.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);box-shadow:none}
-    .deco-grid{display:flex;gap:8px;flex-wrap:wrap}
-    .footer-row{display:flex;gap:12px;margin-top:14px;align-items:center;justify-content:center;flex-wrap:wrap;color:var(--muted)}
-    @media (max-width:760px){.controls{order:2;width:100%}.clock-wrap{order:1;width:100%}.brand h1{font-size:16px}}
-  </style>
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 90%;
+            width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(229, 46, 113, 0.5);
+        }
+
+        .clock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .digital-clock {
+            font-size: 5rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(0, 114, 255, 0.5);
+            padding: 10px 20px;
+            border-radius: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .digital-clock::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .date-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .date {
+            font-size: 1.8rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+
+        .day-names {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .day {
+            padding: 8px 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .day.active {
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(229, 46, 113, 0.7);
+        }
+
+        .additional-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            min-width: 150px;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+        }
+
+        .signature {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: #aaa;
+            text-align: center;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* تأثيرات الواقع الافتراضي */
+        .vr-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.1;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 255, 255, 0.1) 25%, 
+                rgba(255, 0, 255, 0.1) 50%, 
+                rgba(255, 255, 0, 0.1) 75%, 
+                transparent 100%);
+            animation: vrMove 10s infinite linear;
+        }
+
+        @keyframes vrMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .digital-clock {
+                font-size: 3.5rem;
+            }
+            
+            .date {
+                font-size: 1.5rem;
+            }
+            
+            .day {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .feature {
+                padding: 8px 15px;
+                font-size: 1rem;
+                min-width: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .digital-clock {
+                font-size: 2.5rem;
+            }
+            
+            .date {
+                font-size: 1.2rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .day-names {
+                gap: 8px;
+            }
+            
+            .day {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" role="application" aria-label="ساعة رقمية">
-      <div class="top-row">
-        <div class="brand">
-          <div class="logo">س</div>
-          <div>
-            <h1 id="siteTitle">ساعة رقمية</h1>
-            <p id="siteSub" style="margin:0;color:var(--muted);font-size:13px">بتأثيرات صوتية وزخارف عربية</p>
-          </div>
+    <div class="stars" id="stars"></div>
+    <div class="particles" id="particles"></div>
+    <div class="vr-effect"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>ساعة رقمية متطورة</h1>
         </div>
-        <div style="text-align:left"><small style="color:var(--muted)">قابل للتخصيص • يعمل دون اتصال</small></div>
-      </div>
-
-      <div class="center">
-        <div class="clock-wrap">
-          <div class="clock" id="clock" data-time="00:00:00">00:00:00</div>
-          <div class="date" id="date">--</div>
-          <div class="display-name" id="displayName">『عـبـدالـحـمـيـد』</div>
+        
+        <div class="clock-container">
+            <div class="digital-clock" id="clock">00:00:00</div>
+            
+            <div class="date-container">
+                <div class="date" id="date">الاثنين ١ يناير ٢٠٢٣</div>
+                <div class="day-names" id="days">
+                    <!-- سيتم ملء أيام الأسبوع هنا -->
+                </div>
+            </div>
+            
+            <div class="additional-features">
+                <div class="feature" id="stopwatch">00:00:00</div>
+                <div class="feature" id="timer">00:00:00</div>
+                <div class="feature" id="alarm">منبه: غير مضبوط</div>
+                <div class="feature" id="timezone">التوقيت المحلي</div>
+            </div>
+            
+            <div class="controls">
+                <button id="themeToggle">تبديل المظهر</button>
+                <button id="soundToggle">تشغيل/إيقاف الصوت</button>
+                <button id="stopwatchToggle">تشغيل/إيقاف ساعة التوقيف</button>
+                <button id="fullscreenToggle">ملء الشاشة</button>
+            </div>
         </div>
-
-        <div class="controls">
-          <div class="panel">
-            <label for="nameInput">اسم العرض (أدخل أو اختر زخرفة)</label>
-            <input id="nameInput" class="input" placeholder="اكتب اسمك..." />
-            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-              <button class="btn" id="saveNameBtn">حفظ</button>
-              <button class="btn ghost" id="resetNameBtn">إعادة</button>
-            </div>
-          </div>
-
-          <div class="panel">
-            <label>زخارف عربية جاهزة</label>
-            <div class="deco-grid">
-              <button class="btn ghost deco" data-val="『عـبـدالـحـمـيـد』">زخرفة 1</button>
-              <button class="btn ghost deco" data-val="✦ عبدالحميد ✦">زخرفة 2</button>
-              <button class="btn ghost deco" data-val="⚜︎ عبدالحميد ⚜︎">زخرفة 3</button>
-              <button class="btn ghost deco" data-val="★ عبدـالـحـمـيـد ★">زخرفة 4</button>
-              <button class="btn ghost deco" data-val="༺ عبدالحميد ༻">زخرفة 5</button>
-              <!-- زخارف عربية بخط رقعة/مزخرفة -->
-              <button class="btn ghost deco" data-val="꧁  عبدـالـحـمـيـد ꧂">رقعة 1</button>
-              <button class="btn ghost deco" data-val="ღ عبدالحميد ღ">مزخرف 6</button>
-              <button class="btn ghost deco" data-val="✿ عبدـالـحـمـيـد ✿">مزخرف 7</button>
-            </div>
-          </div>
-
-          <div class="panel">
-            <label>زخارف لأيام الأسبوع (عرض تلقائي عند اختيار)</label>
-            <div class="deco-grid">
-              <button class="btn ghost day-deco" data-val="السبت — سَـبْت">السبت</button>
-              <button class="btn ghost day-deco" data-val="الأحد — أَحَد">الأحد</button>
-              <button class="btn ghost day-deco" data-val="الاثنين — اِثْنَان">الاثنين</button>
-              <button class="btn ghost day-deco" data-val="الثلاثاء — ثَلاَثَاء">الثلاثاء</button>
-              <button class="btn ghost day-deco" data-val="الأربعاء — أَرْبِعَاء">الأربعاء</button>
-              <button class="btn ghost day-deco" data-val="الخميس — خَمِيس">الخميس</button>
-              <button class="btn ghost day-deco" data-val="الجمعة — جُمُعَة">الجمعة</button>
-            </div>
-          </div>
-
-          <div class="panel">
-            <label for="formatSelect">تنسيق الوقت</label>
-            <select id="formatSelect" class="select">
-              <option value="24">24 ساعة</option>
-              <option value="12">12 ساعة</option>
-            </select>
-
-            <label style="margin-top:12px">المظهر والأصوات</label>
-            <div style="display:flex;gap:8px;margin-top:6px">
-              <button class="btn" id="themeToggle">تبديل الوضع</button>
-              <button class="btn ghost" id="soundToggle">إيقاف الصوت</button>
-            </div>
-
-            <div style="margin-top:10px;display:flex;gap:8px">
-              <button class="btn" id="copyLinkBtn">نسخ رابط</button>
-              <button class="btn ghost" id="resetAllBtn">إعادة كل الإعدادات</button>
-            </div>
-          </div>
+        
+        <div class="signature">
+            من إعداد عبد الحميد
         </div>
-      </div>
-
-      <div class="footer-row"><small>مبني بواسطة عبدالحميد • قابل للتعديل</small></div>
     </div>
-  </div>
 
-  <script>
-    // عناصر DOM
-    const clockEl = document.getElementById('clock');
-    const dateEl = document.getElementById('date');
-    const nameEl = document.getElementById('displayName');
-    const nameInput = document.getElementById('nameInput');
-    const saveNameBtn = document.getElementById('saveNameBtn');
-    const resetNameBtn = document.getElementById('resetNameBtn');
-    const decoBtns = document.querySelectorAll('.deco');
-    const dayDecos = document.querySelectorAll('.day-deco');
-    const formatSelect = document.getElementById('formatSelect');
-    const themeToggle = document.getElementById('themeToggle');
-    const soundToggle = document.getElementById('soundToggle');
-    const copyLinkBtn = document.getElementById('copyLinkBtn');
-    const resetAllBtn = document.getElementById('resetAllBtn');
+    <audio id="tickSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==" type="audio/wav">
+    </audio>
+    
+    <audio id="hourSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==" type="audio/wav">
+    </audio>
 
-    // حالة وحفظ محلي
-    let is24 = localStorage.getItem('clock_time_format') !== '12';
-    let soundOn = localStorage.getItem('clock_sound') !== '0';
-    const savedName = localStorage.getItem('clock_display_name');
-    const savedTheme = localStorage.getItem('clock_theme_light') === '1';
+    <script>
+        // إنشاء النجوم
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
 
-    if (savedName){ nameEl.textContent = savedName; nameInput.value = savedName; }
-    if (savedTheme) document.body.classList.add('light-mode');
-    formatSelect.value = is24 ? '24' : '12';
-    soundToggle.textContent = soundOn ? 'إيقاف الصوت' : 'تشغيل الصوت';
+        // إنشاء الجسيمات المتحركة
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.width = Math.random() * 10 + 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
 
-    // Web Audio لتوليد أصوات خفيفة (tick + chime)
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    let audioCtx;
-    function ensureAudio(){ if(!audioCtx) audioCtx = new AudioCtx(); }
+        // أيام الأسبوع بالعربية والإنجليزية
+        const daysOfWeek = [
+            { ar: "الأحد", en: "Sunday" },
+            { ar: "الاثنين", en: "Monday" },
+            { ar: "الثلاثاء", en: "Tuesday" },
+            { ar: "الأربعاء", en: "Wednesday" },
+            { ar: "الخميس", en: "Thursday" },
+            { ar: "الجمعة", en: "Friday" },
+            { ar: "السبت", en: "Saturday" }
+        ];
 
-    function playTick(){
-      if(!soundOn) return;
-      ensureAudio();
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = 'sine'; o.frequency.value = 1200;
-      g.gain.value = 0.02;
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start();
-      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.09);
-      o.stop(audioCtx.currentTime + 0.1);
-    }
+        // الشهور بالعربية
+        const months = [
+            "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+            "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+        ];
 
-    function playChime(){
-      if(!soundOn) return;
-      ensureAudio();
-      const now = audioCtx.currentTime;
-      const g = audioCtx.createGain(); g.connect(audioCtx.destination); g.gain.value = 0.0015;
-      const freqs = [880,1320,1760];
-      freqs.forEach((f,i) => {
-        const o = audioCtx.createOscillator();
-        o.type = 'sine'; o.frequency.value = f;
-        o.connect(g);
-        o.start(now + i*0.08);
-        o.stop(now + i*0.38);
-      });
-    }
+        // تهيئة الأيام في الواجهة
+        function initDays() {
+            const daysContainer = document.getElementById('days');
+            daysOfWeek.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.classList.add('day');
+                dayElement.textContent = `${day.ar} / ${day.en}`;
+                daysContainer.appendChild(dayElement);
+            });
+        }
 
-    // تحديث الساعة والتاريخ
-    function pad(n){ return String(n).padStart(2,'0'); }
-    let lastHour = null;
-    function updateClock(){
-      const now = new Date();
-      let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-      if(!is24) h = h % 12 || 12;
-      const timeStr = `${pad(h)}:${pad(m)}:${pad(s)}`;
-      clockEl.textContent = timeStr;
-      clockEl.setAttribute('data-time', timeStr);
+        // تحديث الوقت والتاريخ
+        function updateClock() {
+            const now = new Date();
+            
+            // تحديث الوقت
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // تحديث التاريخ
+            const dayIndex = now.getDay();
+            const dayName = daysOfWeek[dayIndex].ar;
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            document.getElementById('date').textContent = `${dayName} ${date} ${month} ${year}`;
+            
+            // تحديث اليوم النشط
+            updateActiveDay(dayIndex);
+            
+            // تشغيل الأصوات
+            playSounds(seconds);
+        }
 
-      const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-      const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-      dateEl.textContent = `${days[now.getDay()]}، ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        // تحديث اليوم النشط
+        function updateActiveDay(dayIndex) {
+            const days = document.querySelectorAll('.day');
+            days.forEach((day, index) => {
+                if (index === dayIndex) {
+                    day.classList.add('active');
+                } else {
+                    day.classList.remove('active');
+                }
+            });
+        }
 
-      // صوت كل ثانية (خفيف)
-      playTick();
+        // تشغيل الأصوات
+        function playSounds(seconds) {
+            const soundEnabled = document.getElementById('soundToggle').classList.contains('active');
+            if (!soundEnabled) return;
+            
+            const tickSound = document.getElementById('tickSound');
+            const hourSound = document.getElementById('hourSound');
+            
+            // صوت النقر كل ثانية
+            tickSound.currentTime = 0;
+            tickSound.play().catch(e => console.log("لم يتم تشغيل الصوت: " + e));
+            
+            // صوت مختلف عند اكتمال الدقيقة
+            if (seconds === '00') {
+                hourSound.currentTime = 0;
+                hourSound.play().catch(e => console.log("لم يتم تشغيل الصوت: " + e));
+            }
+        }
 
-      // رنين عند الساعة (عند تغيير الساعة)
-      if(lastHour === null) lastHour = now.getHours();
-      if(now.getHours() !== lastHour){
-        playChime();
-        lastHour = now.getHours();
-      }
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+        // ساعة التوقيف
+        let stopwatchInterval;
+        let stopwatchRunning = false;
+        let stopwatchTime = 0;
 
-    // الأحداث: الاسم والزخارف
-    saveNameBtn.addEventListener('click', () => {
-      const v = nameInput.value.trim();
-      if(!v) return alert('اكتب اسماً أو اختر زخرفة.');
-      nameEl.textContent = v;
-      localStorage.setItem('clock_display_name', v);
-    });
-    resetNameBtn.addEventListener('click', () => {
-      localStorage.removeItem('clock_display_name');
-      nameEl.textContent = "『عـبـدالـحـمـيـد』";
-      nameInput.value = '';
-    });
-    decoBtns.forEach(b => b.addEventListener('click', () => {
-      const v = b.dataset.val; nameEl.textContent = v; nameInput.value = v; localStorage.setItem('clock_display_name', v);
-    }));
+        function updateStopwatch() {
+            if (!stopwatchRunning) return;
+            
+            stopwatchTime++;
+            const hours = Math.floor(stopwatchTime / 3600);
+            const minutes = Math.floor((stopwatchTime % 3600) / 60);
+            const seconds = stopwatchTime % 60;
+            
+            document.getElementById('stopwatch').textContent = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
 
-    // زخارف أيام الأسبوع تضيف نص التاريخ أو الاسم
-    dayDecos.forEach(b => b.addEventListener('click', () => {
-      const v = b.dataset.val;
-      // إذا احتوى v على فاصل، نظهره في حقل التاريخ مؤقتًا مع تأثير ضوء
-      dateEl.textContent = v;
-      setTimeout(updateClock, 3000); // يعيد التاريخ بعد 3 ثواني
-    }));
+        function toggleStopwatch() {
+            if (stopwatchRunning) {
+                clearInterval(stopwatchInterval);
+                stopwatchRunning = false;
+            } else {
+                stopwatchInterval = setInterval(updateStopwatch, 1000);
+                stopwatchRunning = true;
+            }
+        }
 
-    // تنسيق الوقت
-    formatSelect.addEventListener('change', () => {
-      is24 = formatSelect.value === '24';
-      localStorage.setItem('clock_time_format', is24 ? '24' : '12');
-      updateClock();
-    });
+        // تبديل المظهر
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
 
-    // تبديل الثيم
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      const isLight = document.body.classList.contains('light-mode');
-      localStorage.setItem('clock_theme_light', isLight ? '1' : '0');
-    });
+        // تبديل الصوت
+        function toggleSound() {
+            document.getElementById('soundToggle').classList.toggle('active');
+        }
 
-    // تبديل الصوت
-    soundToggle.addEventListener('click', () => {
-      soundOn = !soundOn;
-      localStorage.setItem('clock_sound', soundOn ? '1' : '0');
-      soundToggle.textContent = soundOn ? 'إيقاف الصوت' : 'تشغيل الصوت';
-      // تفعيل صوت للتأكيد عند التشغيل
-      if(soundOn) playChime();
-    });
+        // وضع ملء الشاشة
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`خطأ في تفعيل وضع ملء الشاشة: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
 
-    // نسخ رابط الموقع
-    copyLinkBtn.addEventListener('click', async () => {
-      try{
-        await navigator.clipboard.writeText(location.href);
-        copyLinkBtn.textContent = 'تم النسخ';
-        setTimeout(()=> copyLinkBtn.textContent = 'نسخ رابط',1500);
-      }catch(e){ alert('النسخ غير مدعوم'); }
-    });
+        // تهيئة التطبيق
+        function initApp() {
+            createStars();
+            createParticles();
+            initDays();
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // إضافة مستمعي الأحداث
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            document.getElementById('soundToggle').addEventListener('click', toggleSound);
+            document.getElementById('stopwatchToggle').addEventListener('click', toggleStopwatch);
+            document.getElementById('fullscreenToggle').addEventListener('click', toggleFullscreen);
+            
+            // إضافة تأثيرات CSS للمظهر الفاتح
+            const style = document.createElement('style');
+            style.textContent = `
+                body.light-theme {
+                    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+                    color: #333;
+                }
+                
+                body.light-theme .container {
+                    background: rgba(255, 255, 255, 0.8);
+                    color: #333;
+                }
+                
+                body.light-theme .day {
+                    background: rgba(0, 0, 0, 0.1);
+                }
+                
+                body.light-theme .feature {
+                    background: rgba(0, 0, 0, 0.1);
+                }
+            `;
+            document.head.appendChild(style);
+        }
 
-    // إعادة كل الإعدادات
-    resetAllBtn.addEventListener('click', () => {
-      if(confirm('هل تريد إعادة كل الإعدادات إلى الافتراضي؟')){
-        localStorage.clear(); location.reload();
-      }
-    });
-
-    // حفظ الاسم تلقائياً عند الخروج
-    window.addEventListener('beforeunload', ()=> {
-      if(nameInput.value.trim()) localStorage.setItem('clock_display_name', nameInput.value.trim());
-    });
-  </script>
+        // بدء التطبيق عند تحميل الصفحة
+        window.addEventListener('load', initApp);
+    </script>
 </body>
 </html>
