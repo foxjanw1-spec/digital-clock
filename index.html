@@ -1,37 +1,292 @@
-<!-- login.html -->
 <!doctype html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login - Abdulhamid Cloud</title>
+  <title>Abdulhamid Cloud - Local</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass { background: rgba(255,255,255,0.75); backdrop-filter: blur(6px); }
+    .card-shadow { box-shadow: 0 10px 30px rgba(2,6,23,0.12); border-radius: 12px; }
+    .file-card { transition: transform .15s ease, box-shadow .15s ease; }
+    .file-card:hover { transform: translateY(-6px); box-shadow: 0 14px 30px rgba(2,6,23,0.14); }
+    .pdf-preview { width: 100%; height: 420px; border-radius: 8px; border: 1px solid #e5e7eb; }
+    input:focus, button:focus { outline: none; box-shadow: 0 6px 18px rgba(99,102,241,0.12); }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-gray-100 to-white min-h-screen flex items-center justify-center">
-  <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
-    <h1 class="text-2xl font-semibold mb-2">Abdulhamid Cloud</h1>
-    <p class="text-sm text-gray-500 mb-6">تسجيل الدخول لطلاب علوم الحاسوب</p>
+<body class="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-700 to-purple-700 font-sans text-gray-800">
+  <div class="max-w-3xl mx-auto p-4">
+    <header class="text-center text-white mb-4">
+      <h1 class="text-2xl font-bold">Abdulhamid Cloud</h1>
+      <p class="text-sm opacity-90 mt-1">تخزين ومشاركة ملاحظات وملفات - تجربة محلية على جهازك</p>
+    </header>
 
-    <form id="loginForm" class="space-y-4">
-      <div>
-        <label class="text-sm font-medium">رقم الهاتف</label>
-        <input id="phone" type="tel" required
-               class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-300" placeholder="+9677xxxxxxx" />
+    <main id="app">
+      <!-- Login -->
+      <section id="loginView" class="glass card-shadow p-6 mb-6">
+        <label class="block text-indigo-900 font-medium mb-2">أدخل رقم الهاتف</label>
+        <div class="flex gap-3 items-center">
+          <span class="px-3 py-2 bg-indigo-100 text-indigo-800 rounded-lg">+967</span>
+          <input id="loginPhone" type="tel" inputmode="numeric" placeholder="77XXXXXXX"
+                 class="flex-1 px-4 py-3 rounded-lg border border-gray-200" />
+        </div>
+        <p class="text-xs text-gray-700 mt-2">الدخول برقم فقط. الأرقام المدراء جاهزة لديك.</p>
+        <div class="mt-4 flex gap-2">
+          <button id="btnLogin" class="flex-1 bg-green-500 text-white py-3 rounded-lg font-semibold">دخول</button>
+          <button id="btnPreview" class="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold">تجربة كزائر</button>
+        </div>
+        <p class="mt-4 text-xs text-gray-600">Built by <strong>Abdulhamid</strong></p>
+      </section>
+
+      <!-- Admin Dashboard -->
+      <section id="adminView" class="hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-white text-lg font-semibold">لوحة المدير</h2>
+          <div class="text-sm text-white">الحساب: <span id="adminPhoneText"></span></div>
+        </div>
+
+        <div class="glass card-shadow p-4 mb-4">
+          <label class="block text-indigo-900 font-medium mb-2">رفع ملفات</label>
+          <input id="fileInput" type="file" multiple accept=".pdf,image/*" class="mb-3" />
+          <div class="flex gap-3">
+            <button id="btnUpload" class="bg-indigo-700 text-white px-4 py-2 rounded-lg">رفع الملفات</button>
+            <button id="btnOpenStorage" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">فتح المجلد المحلي</button>
+          </div>
+        </div>
+
+        <div class="glass card-shadow p-4 mb-4">
+          <label class="block text-indigo-900 font-medium mb-2">قائمة الأرقام المصرح لها</label>
+          <div class="flex gap-2 mb-3">
+            <input id="newAllowed" placeholder="مثال: 771234567" class="flex-1 px-3 py-2 rounded-lg border" />
+            <button id="addAllowed" class="bg-green-500 text-white px-4 py-2 rounded-lg">إضافة</button>
+          </div>
+          <ul id="allowedList" class="space-y-2 text-sm text-gray-700"></ul>
+        </div>
+
+        <div class="glass card-shadow p-4 mb-4">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-semibold text-indigo-900">الإعدادات</h3>
+            <div class="text-sm text-gray-700">حجم الملفات مخزن محلياً</div>
+          </div>
+          <div class="flex gap-2">
+            <button id="btnClear" class="bg-red-500 text-white px-4 py-2 rounded-lg">مسح البيانات المحلية</button>
+            <button id="btnExport" class="bg-gray-800 text-white px-4 py-2 rounded-lg">تصدير بيانات JSON</button>
+          </div>
+        </div>
+
+        <div class="glass card-shadow p-4">
+          <h3 class="font-semibold text-indigo-900 mb-3">ملفاتك</h3>
+          <div id="filesGrid" class="grid grid-cols-2 gap-3"></div>
+        </div>
+      </section>
+
+      <!-- Viewer Dashboard -->
+      <section id="viewerView" class="hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-white text-lg font-semibold">لوحة العرض</h2>
+          <div class="text-sm text-white">المستخدم: <span id="viewerPhoneText"></span></div>
+        </div>
+
+        <div class="glass card-shadow p-4 mb-4">
+          <h3 class="font-semibold text-indigo-900 mb-3">المحتوى المتاح</h3>
+          <div id="viewerFilesGrid" class="grid grid-cols-2 gap-3"></div>
+        </div>
+      </section>
+
+      <!-- File Preview Modal -->
+      <div id="previewModal" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative max-w-3xl w-full mx-4 glass p-4 card-shadow z-10">
+          <div class="flex justify-between items-center mb-3">
+            <h4 id="previewTitle" class="font-semibold text-indigo-900"></h4>
+            <div class="flex gap-2">
+              <a id="downloadBtn" class="bg-green-500 text-white px-3 py-1 rounded-lg">تحميل</a>
+              <button id="closePreview" class="bg-gray-200 px-3 py-1 rounded-lg">إغلاق</button>
+            </div>
+          </div>
+          <div id="previewContent"></div>
+        </div>
       </div>
 
-      <div>
-        <label class="text-sm font-medium">كلمة السر</label>
-        <input id="password" type="password" required
-               class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-300" />
-      </div>
-
-      <div class="flex items-center justify-between">
-        <a href="/forgot" class="text-sm text-indigo-600">هل نسيت كلمة السر؟</a>
-        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">دخول</button>
-      </div>
-    </form>
-
-    <p class="mt-6 text-xs text-gray-400">Built by <strong>Abdulhamid</strong></p>
+    </main>
   </div>
-</body>
-</html>
+
+<script>
+/* تطبيق محلي واحد الملف - يستخدم IndexedDB لحفظ الملفات كبيانات ومتا داتا في local storage */
+const ADMIN_NUMBERS = ['775246175','771511714'];
+const DB_NAME = 'abdul_files_db_v1';
+const STORE_FILES = 'files_store';
+const STORE_META = 'meta_store';
+
+let db;
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = e => {
+      const idb = e.target.result;
+      if (!idb.objectStoreNames.contains(STORE_FILES)) {
+        idb.createObjectStore(STORE_FILES, { keyPath: 'id' });
+      }
+      if (!idb.objectStoreNames.contains(STORE_META)) {
+        idb.createObjectStore(STORE_META, { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = e => reject(e);
+  });
+}
+
+function idbPut(store, value) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const st = tx.objectStore(store);
+    const r = st.put(value);
+    r.onsuccess = () => res(true);
+    r.onerror = e => rej(e);
+  });
+}
+function idbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const st = tx.objectStore(store);
+    const r = st.getAll();
+    r.onsuccess = () => res(r.result || []);
+    r.onerror = e => rej(e);
+  });
+}
+function idbGet(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const st = tx.objectStore(store);
+    const r = st.get(key);
+    r.onsuccess = () => res(r.result);
+    r.onerror = e => rej(e);
+  });
+}
+function idbDelete(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const st = tx.objectStore(store);
+    const r = st.delete(key);
+    r.onsuccess = () => res(true);
+    r.onerror = e => rej(e);
+  });
+}
+
+/* إعداد أولي: أرقام المدير محفوظة في meta */
+async function ensureInitialMeta() {
+  const record = await idbGet(STORE_META, 'allowedNumbers');
+  if (!record) {
+    await idbPut(STORE_META, { key: 'allowedNumbers', value: ADMIN_NUMBERS.slice() });
+  }
+}
+
+/* مساعدات للملفات */
+function genId() { return 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2,8); }
+
+async function saveFileObject(name, type, size, dataURL) {
+  const id = genId();
+  const item = { id, name, type, size, dataURL, createdAt: Date.now() };
+  await idbPut(STORE_FILES, item);
+  return item;
+}
+
+async function loadFiles() {
+  return await idbGetAll(STORE_FILES);
+}
+
+/* DOM واستخدام */
+const loginView = document.getElementById('loginView');
+const adminView = document.getElementById('adminView');
+const viewerView = document.getElementById('viewerView');
+const btnLogin = document.getElementById('btnLogin');
+const btnPreview = document.getElementById('btnPreview');
+const loginPhone = document.getElementById('loginPhone');
+const adminPhoneText = document.getElementById('adminPhoneText');
+const viewerPhoneText = document.getElementById('viewerPhoneText');
+const fileInput = document.getElementById('fileInput');
+const btnUpload = document.getElementById('btnUpload');
+const filesGrid = document.getElementById('filesGrid');
+const viewerFilesGrid = document.getElementById('viewerFilesGrid');
+const allowedList = document.getElementById('allowedList');
+const newAllowed = document.getElementById('newAllowed');
+const addAllowed = document.getElementById('addAllowed');
+const btnClear = document.getElementById('btnClear');
+const btnExport = document.getElementById('btnExport');
+const previewModal = document.getElementById('previewModal');
+const previewContent = document.getElementById('previewContent');
+const previewTitle = document.getElementById('previewTitle');
+const closePreview = document.getElementById('closePreview');
+const downloadBtn = document.getElementById('downloadBtn');
+
+let currentUser = null;
+let allowedNumbers = [];
+
+async function renderAllowed() {
+  const rec = await idbGet(STORE_META, 'allowedNumbers');
+  allowedNumbers = (rec && rec.value) ? rec.value : [];
+  allowedList.innerHTML = '';
+  allowedNumbers.forEach(n => {
+    const li = document.createElement('li');
+    li.className = 'flex justify-between items-center bg-white/80 p-2 rounded-lg';
+    li.innerHTML = `<span class="text-sm">${n}</span>
+      <div class="flex gap-2">
+        <button data-num="${n}" class="removeAllowed bg-red-500 text-white px-2 py-1 rounded-lg text-xs">حذف</button>
+      </div>`;
+    allowedList.appendChild(li);
+  });
+  document.querySelectorAll('.removeAllowed').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      const num = e.target.dataset.num;
+      allowedNumbers = allowedNumbers.filter(x => x !== num);
+      await idbPut(STORE_META, { key: 'allowedNumbers', value: allowedNumbers });
+      await renderAllowed();
+      await renderFilesGrid();
+    });
+  });
+}
+
+addAllowed.addEventListener('click', async () => {
+  const val = newAllowed.value.trim();
+  if (!val) return alert('أدخل رقم صحيح.');
+  if (!allowedNumbers.includes(val)) allowedNumbers.push(val);
+  await idbPut(STORE_META, { key: 'allowedNumbers', value: allowedNumbers });
+  newAllowed.value = '';
+  await renderAllowed();
+});
+
+/* مصير الدخول */
+btnLogin.addEventListener('click', async () => {
+  const raw = loginPhone.value.replace(/\D/g,'').trim();
+  if (!raw) return alert('أدخل رقم الهاتف.');
+  currentUser = { phone: raw, role: ADMIN_NUMBERS.includes(raw) ? 'admin' : (await isAllowed(raw) ? 'viewer' : 'none') };
+  if (currentUser.role === 'none') {
+    if (confirm('هذا الرقم غير مصرح له. إرسال طلب؟ اختر "موافق" لإضافة الرقم إلى قائمة العرض الآن.')) {
+      const rec = await idbGet(STORE_META, 'allowedNumbers');
+      const arr = (rec && rec.value) ? rec.value : [];
+      if (!arr.includes(raw)) arr.push(raw);
+      await idbPut(STORE_META, { key: 'allowedNumbers', value: arr });
+      await ensureInitialMeta();
+      currentUser.role = 'viewer';
+      await bootForUser();
+    } else {
+      return;
+    }
+  } else {
+    await bootForUser();
+  }
+});
+
+btnPreview.addEventListener('click', async () => {
+  currentUser = { phone: 'guest', role: 'viewer' };
+  await bootForUser(true);
+});
+
+async function isAllowed(phone) {
+  const rec = await idbGet(STORE_META, 'allowedNumbers');
+  const arr = (rec && rec.value) ? rec.value : [];
+  return arr.includes(phone);
+}
+
+async function bootForUser(isPreview=false) {
+  loginView.class
