@@ -3,380 +3,697 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ساعة رقمية متطورة - من إعداد عبد الحميد</title>
+    <title>Professional Digital Clock | Abdul Hameed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Tajawal', sans-serif;
+        }
+
+        :root {
+            --primary: #00c6ff;
+            --secondary: #0072ff;
+            --accent: #ff2e63;
+            --dark: #0f1423;
+            --darker: #090c17;
+            --light: #ffffff;
+            --gray: #a0a7c2;
+            --success: #00d26a;
+            --warning: #ffbd2e;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            color: #fff;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
-        }
-
-        .stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .star {
-            position: absolute;
-            background-color: #fff;
-            border-radius: 50%;
-            animation: twinkle 5s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
-        }
-
-        .container {
-            text-align: center;
+            line-height: 1.6;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 90%;
-            width: 800px;
-            position: relative;
-            z-index: 1;
         }
 
-        .header {
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff8a00, #e52e71);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(229, 46, 113, 0.5);
-        }
-
-        .clock-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .digital-clock {
-            font-size: 5rem;
-            font-weight: bold;
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(0, 114, 255, 0.5);
-            padding: 10px 20px;
-            border-radius: 15px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            position: relative;
+        /* تأثيرات الخلفية */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
             overflow: hidden;
         }
 
-        .digital-clock::before {
-            content: '';
+        .floating-shapes {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
+            width: 100%;
+            height: 100%;
         }
 
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            animation: float 20s infinite linear;
         }
 
-        .date-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
         }
 
-        .date {
-            font-size: 1.8rem;
-            color: #ffcc00;
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 70%;
+            left: 80%;
+            animation-delay: -5s;
+            animation-duration: 15s;
         }
 
-        .day-names {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
+        .shape:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            left: 80%;
+            animation-delay: -10s;
         }
 
-        .day {
-            padding: 8px 15px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            font-weight: bold;
-        }
-
-        .day.active {
-            background: linear-gradient(90deg, #ff8a00, #e52e71);
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(229, 46, 113, 0.7);
-        }
-
-        .additional-features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .feature {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            font-size: 1.2rem;
-            min-width: 150px;
-        }
-
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
-        }
-
-        .signature {
-            margin-top: 30px;
-            font-size: 1.2rem;
-            color: #aaa;
-            text-align: center;
-        }
-
-        .particles {
+        .grid-lines {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            animation: float 15s infinite linear;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
         }
 
         @keyframes float {
             0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
+                transform: translate(0, 0) rotate(0deg);
             }
-            10% {
-                opacity: 1;
+            33% {
+                transform: translate(30px, -50px) rotate(120deg);
             }
-            90% {
-                opacity: 1;
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
             }
             100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
+                transform: translate(0, 0) rotate(360deg);
             }
+        }
+
+        /* الهيدر */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* الساعة الرقمية */
+        .clock-section {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .clock-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .digital-clock {
+            font-size: 5.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0, 198, 255, 0.5);
+            position: relative;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .clock-label {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* التاريخ والأيام */
+        .date-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .date {
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--light);
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .day-names {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day {
+            padding: 12px 5px;
+            text-align: center;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid transparent;
+        }
+
+        .day.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .day-ar {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .day-en {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* الميزات الإضافية */
+        .features-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            margin-left: 15px;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .feature-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-display {
+            font-size: 2rem;
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            font-variant-numeric: tabular-nums;
+            border: 1px solid var(--glass-border);
+        }
+
+        .feature-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.6);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #ff6b9c);
+            box-shadow: 0 5px 15px rgba(255, 46, 99, 0.4);
+        }
+
+        .btn-accent:hover {
+            background: linear-gradient(135deg, #ff6b9c, var(--accent));
+            box-shadow: 0 8px 20px rgba(255, 46, 99, 0.6);
+        }
+
+        /* أزرار التحكم */
+        .controls-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .control-btn {
+            padding: 18px;
+            border-radius: 16px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .control-btn i {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* التوقيع */
+        .signature {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 1.1rem;
+            border-top: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .signature span {
+            color: var(--primary);
+            font-weight: 600;
         }
 
         /* تأثيرات الواقع الافتراضي */
         .vr-effect {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 2;
-            opacity: 0.1;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(0, 255, 255, 0.1) 25%, 
-                rgba(255, 0, 255, 0.1) 50%, 
-                rgba(255, 255, 0, 0.1) 75%, 
-                transparent 100%);
-            animation: vrMove 10s infinite linear;
+            z-index: -1;
+            opacity: 0.05;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 198, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 46, 99, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 114, 255, 0.1) 0%, transparent 50%);
+            animation: vrPulse 15s infinite alternate;
         }
 
-        @keyframes vrMove {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        @keyframes vrPulse {
+            0% {
+                opacity: 0.03;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.08;
+                transform: scale(1.1);
+            }
         }
 
         /* تصميم متجاوب */
         @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
             .digital-clock {
                 font-size: 3.5rem;
             }
             
             .date {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
             
-            .day {
-                padding: 6px 12px;
-                font-size: 0.9rem;
+            .day-names {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
             }
             
-            .feature {
-                padding: 8px 15px;
-                font-size: 1rem;
-                min-width: 120px;
+            .day:nth-child(n+5) {
+                grid-column: span 2;
+            }
+            
+            .feature-display {
+                font-size: 1.6rem;
+            }
+            
+            .controls-section {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
             .digital-clock {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
             
             .date {
                 font-size: 1.2rem;
             }
             
-            .header h1 {
-                font-size: 1.8rem;
+            .day-ar {
+                font-size: 1rem;
             }
             
-            .day-names {
-                gap: 8px;
+            .day-en {
+                font-size: 0.7rem;
             }
             
-            .day {
-                padding: 5px 10px;
-                font-size: 0.8rem;
+            .feature-display {
+                font-size: 1.4rem;
             }
+            
+            .controls-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .clock-section, .feature-card {
+                padding: 20px;
+            }
+        }
+
+        /* تأثيرات النبض للثواني */
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* مؤشرات الحالة */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-on {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .status-off {
+            background: var(--gray);
         }
     </style>
 </head>
 <body>
-    <div class="stars" id="stars"></div>
-    <div class="particles" id="particles"></div>
+    <div class="bg-effects">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        <div class="grid-lines"></div>
+    </div>
     <div class="vr-effect"></div>
     
+    <div class="header">
+        <h1>Professional Digital Clock</h1>
+        <p>Display time and date with advanced features and modern design</p>
+    </div>
+    
     <div class="container">
-        <div class="header">
-            <h1>ساعة رقمية متطورة</h1>
-        </div>
-        
-        <div class="clock-container">
+        <div class="clock-section">
             <div class="digital-clock" id="clock">00:00:00</div>
+            <div class="clock-label">
+                <span>Hours</span>
+                <span>Minutes</span>
+                <span>Seconds</span>
+            </div>
             
             <div class="date-container">
-                <div class="date" id="date">الاثنين ١ يناير ٢٠٢٣</div>
+                <div class="date" id="date">Monday 1 January 2023</div>
                 <div class="day-names" id="days">
                     <!-- سيتم ملء أيام الأسبوع هنا -->
                 </div>
             </div>
-            
-            <div class="additional-features">
-                <div class="feature" id="stopwatch">00:00:00</div>
-                <div class="feature" id="timer">00:00:00</div>
-                <div class="feature" id="alarm">منبه: غير مضبوط</div>
-                <div class="feature" id="timezone">التوقيت المحلي</div>
-            </div>
-            
-            <div class="controls">
-                <button id="themeToggle">تبديل المظهر</button>
-                <button id="soundToggle">تشغيل/إيقاف الصوت</button>
-                <button id="stopwatchToggle">تشغيل/إيقاف ساعة التوقيف</button>
-                <button id="fullscreenToggle">ملء الشاشة</button>
-            </div>
         </div>
         
-        <div class="signature">
-            من إعداد عبد الحميد
+        <div class="features-section">
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <div class="feature-title">Stopwatch</div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-display" id="stopwatch">00:00:00</div>
+                    <div class="feature-controls">
+                        <button class="btn btn-primary" id="stopwatchStart">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                        <button class="btn" id="stopwatchPause">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="btn btn-accent" id="stopwatchReset">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="feature-title">Timer</div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-display" id="timer">25:00</div>
+                    <div class="feature-controls">
+                        <button class="btn btn-primary" id="timerStart">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                        <button class="btn" id="timerPause">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="btn btn-accent" id="timerReset">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="feature-title">Alarm</div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-display" id="alarmDisplay">--:--</div>
+                    <div class="feature-controls">
+                        <button class="btn btn-primary" id="setAlarm">
+                            <i class="fas fa-clock"></i> Set Alarm
+                        </button>
+                        <button class="btn btn-accent" id="toggleAlarm">
+                            <span class="status-indicator status-off"></span> Off
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <div class="controls-section">
+        <div class="control-btn" id="themeToggle">
+            <i class="fas fa-palette"></i>
+            <span>Toggle Theme</span>
+        </div>
+        <div class="control-btn" id="soundToggle">
+            <i class="fas fa-volume-up"></i>
+            <span>Sound On/Off</span>
+        </div>
+        <div class="control-btn" id="fullscreenToggle">
+            <i class="fas fa-expand"></i>
+            <span>Fullscreen</span>
+        </div>
+        <div class="control-btn" id="settingsToggle">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </div>
+    </div>
+    
+    <div class="signature">
+        Developed with <i class="fas fa-heart" style="color: var(--accent);"></i> | By <span>Abdul Hameed</span>
+    </div>
 
+    <!-- العناصر الصوتية -->
     <audio id="tickSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==" type="audio/wav">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAABAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAABQTEFNRTMuMTAwBKkAAAAAAAAAADUgJAO8QQAAAYCAAnGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tQxAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAASYYgUxBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" type="audio/mpeg">
     </audio>
     
-    <audio id="hourSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==" type="audio/wav">
+    <audio id="alarmSound" preload="auto">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAABAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAABQTEFNRTMuMTAwBKkAAAAAAAAAADUgJAO8QQAAAYCAAnGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tQxAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAASYYgUxBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" type="audio/mpeg">
     </audio>
 
     <script>
-        // إنشاء النجوم
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 150; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                star.style.width = Math.random() * 3 + 'px';
-                star.style.height = star.style.width;
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 5 + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-
-        // إنشاء الجسيمات المتحركة
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.width = Math.random() * 10 + 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                particle.style.animationDelay = Math.random() * 5 + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-
         // أيام الأسبوع بالعربية والإنجليزية
         const daysOfWeek = [
             { ar: "الأحد", en: "Sunday" },
@@ -388,10 +705,20 @@
             { ar: "السبت", en: "Saturday" }
         ];
 
-        // الشهور بالعربية
+        // الشهور بالعربية والإنجليزية
         const months = [
-            "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
-            "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+            { ar: "يناير", en: "January" },
+            { ar: "فبراير", en: "February" },
+            { ar: "مارس", en: "March" },
+            { ar: "أبريل", en: "April" },
+            { ar: "مايو", en: "May" },
+            { ar: "يونيو", en: "June" },
+            { ar: "يوليو", en: "July" },
+            { ar: "أغسطس", en: "August" },
+            { ar: "سبتمبر", en: "September" },
+            { ar: "أكتوبر", en: "October" },
+            { ar: "نوفمبر", en: "November" },
+            { ar: "ديسمبر", en: "December" }
         ];
 
         // تهيئة الأيام في الواجهة
@@ -400,7 +727,10 @@
             daysOfWeek.forEach(day => {
                 const dayElement = document.createElement('div');
                 dayElement.classList.add('day');
-                dayElement.textContent = `${day.ar} / ${day.en}`;
+                dayElement.innerHTML = `
+                    <div class="day-ar">${day.ar}</div>
+                    <div class="day-en">${day.en}</div>
+                `;
                 daysContainer.appendChild(dayElement);
             });
         }
@@ -415,11 +745,17 @@
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
             
+            // إضافة تأثير النبض للثواني
+            const secondsElement = document.getElementById('clock');
+            secondsElement.classList.remove('pulse');
+            void secondsElement.offsetWidth; // إعادة التدفق لإعادة التشغيل
+            secondsElement.classList.add('pulse');
+            
             // تحديث التاريخ
             const dayIndex = now.getDay();
-            const dayName = daysOfWeek[dayIndex].ar;
+            const dayName = daysOfWeek[dayIndex].en;
             const date = now.getDate();
-            const month = months[now.getMonth()];
+            const month = months[now.getMonth()].en;
             const year = now.getFullYear();
             document.getElementById('date').textContent = `${dayName} ${date} ${month} ${year}`;
             
@@ -428,6 +764,9 @@
             
             // تشغيل الأصوات
             playSounds(seconds);
+            
+            // التحقق من المنبه
+            checkAlarm(hours, minutes);
         }
 
         // تحديث اليوم النشط
@@ -448,17 +787,10 @@
             if (!soundEnabled) return;
             
             const tickSound = document.getElementById('tickSound');
-            const hourSound = document.getElementById('hourSound');
             
             // صوت النقر كل ثانية
             tickSound.currentTime = 0;
             tickSound.play().catch(e => console.log("لم يتم تشغيل الصوت: " + e));
-            
-            // صوت مختلف عند اكتمال الدقيقة
-            if (seconds === '00') {
-                hourSound.currentTime = 0;
-                hourSound.play().catch(e => console.log("لم يتم تشغيل الصوت: " + e));
-            }
         }
 
         // ساعة التوقيف
@@ -478,79 +810,150 @@
                 `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        function toggleStopwatch() {
-            if (stopwatchRunning) {
-                clearInterval(stopwatchInterval);
-                stopwatchRunning = false;
-            } else {
+        function startStopwatch() {
+            if (!stopwatchRunning) {
                 stopwatchInterval = setInterval(updateStopwatch, 1000);
                 stopwatchRunning = true;
-            }
-        }
-
-        // تبديل المظهر
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-        }
-
-        // تبديل الصوت
-        function toggleSound() {
-            document.getElementById('soundToggle').classList.toggle('active');
-        }
-
-        // وضع ملء الشاشة
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`خطأ في تفعيل وضع ملء الشاشة: ${err.message}`);
-                });
+                document.getElementById('stopwatchStart').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                document.getElementById('stopwatchStart').classList.remove('btn-primary');
+                document.getElementById('stopwatchStart').classList.add('btn-accent');
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                clearInterval(stopwatchInterval);
+                stopwatchRunning = false;
+                document.getElementById('stopwatchStart').innerHTML = '<i class="fas fa-play"></i> Resume';
+                document.getElementById('stopwatchStart').classList.remove('btn-accent');
+                document.getElementById('stopwatchStart').classList.add('btn-primary');
             }
         }
 
-        // تهيئة التطبيق
-        function initApp() {
-            createStars();
-            createParticles();
-            initDays();
-            updateClock();
-            setInterval(updateClock, 1000);
-            
-            // إضافة مستمعي الأحداث
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-            document.getElementById('soundToggle').addEventListener('click', toggleSound);
-            document.getElementById('stopwatchToggle').addEventListener('click', toggleStopwatch);
-            document.getElementById('fullscreenToggle').addEventListener('click', toggleFullscreen);
-            
-            // إضافة تأثيرات CSS للمظهر الفاتح
-            const style = document.createElement('style');
-            style.textContent = `
-                body.light-theme {
-                    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-                    color: #333;
-                }
-                
-                body.light-theme .container {
-                    background: rgba(255, 255, 255, 0.8);
-                    color: #333;
-                }
-                
-                body.light-theme .day {
-                    background: rgba(0, 0, 0, 0.1);
-                }
-                
-                body.light-theme .feature {
-                    background: rgba(0, 0, 0, 0.1);
-                }
-            `;
-            document.head.appendChild(style);
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            stopwatchRunning = false;
+            stopwatchTime = 0;
+            document.getElementById('stopwatch').textContent = '00:00:00';
+            document.getElementById('stopwatchStart').innerHTML = '<i class="fas fa-play"></i> Start';
+            document.getElementById('stopwatchStart').classList.remove('btn-accent');
+            document.getElementById('stopwatchStart').classList.add('btn-primary');
         }
 
-        // بدء التطبيق عند تحميل الصفحة
-        window.addEventListener('load', initApp);
-    </script>
-</body>
-</html>
+        // المؤقت
+        let timerInterval;
+        let timerRunning = false;
+        let timerTime = 25 * 60; // 25 دقيقة بالثواني
+
+        function updateTimer() {
+            if (!timerRunning) return;
+            
+            if (timerTime <= 0) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timer').textContent = '00:00';
+                document.getElementById('timer').style.color = 'var(--accent)';
+                playAlarmSound();
+                return;
+            }
+            
+            timerTime--;
+            const minutes = Math.floor(timerTime / 60);
+            const seconds = timerTime % 60;
+            
+            document.getElementById('timer').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+            // تغيير اللون عندما يقل الوقت عن دقيقة
+            if (timerTime < 60) {
+                document.getElementById('timer').style.color = 'var(--accent)';
+            }
+        }
+
+        function startTimer() {
+            if (!timerRunning) {
+                timerInterval = setInterval(updateTimer, 1000);
+                timerRunning = true;
+                document.getElementById('timerStart').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                document.getElementById('timerStart').classList.remove('btn-primary');
+                document.getElementById('timerStart').classList.add('btn-accent');
+            } else {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timerStart').innerHTML = '<i class="fas fa-play"></i> Resume';
+                document.getElementById('timerStart').classList.remove('btn-accent');
+                document.getElementById('timerStart').classList.add('btn-primary');
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            timerTime = 25 * 60;
+            document.getElementById('timer').textContent = '25:00';
+            document.getElementById('timer').style.color = '';
+            document.getElementById('timerStart').innerHTML = '<i class="fas fa-play"></i> Start';
+            document.getElementById('timerStart').classList.remove('btn-accent');
+            document.getElementById('timerStart').classList.add('btn-primary');
+        }
+
+        // المنبه
+        let alarmTime = null;
+        let alarmActive = false;
+
+        function setAlarm() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // إضافة 5 دقائق كمنبه افتراضي
+            let alarmHour = currentHour;
+            let alarmMinute = currentMinute + 5;
+            
+            if (alarmMinute >= 60) {
+                alarmHour = (alarmHour + 1) % 24;
+                alarmMinute = alarmMinute % 60;
+            }
+            
+            alarmTime = {
+                hour: alarmHour,
+                minute: alarmMinute
+            };
+            
+            document.getElementById('alarmDisplay').textContent = 
+                `${String(alarmTime.hour).padStart(2, '0')}:${String(alarmTime.minute).padStart(2, '0')}`;
+                
+            // تفعيل المنبه
+            alarmActive = true;
+            updateAlarmButton();
+        }
+
+        function toggleAlarm() {
+            alarmActive = !alarmActive;
+            updateAlarmButton();
+        }
+
+        function updateAlarmButton() {
+            const alarmButton = document.getElementById('toggleAlarm');
+            const indicator = alarmButton.querySelector('.status-indicator');
+            
+            if (alarmActive) {
+                alarmButton.innerHTML = '<span class="status-indicator status-on"></span> On';
+                alarmButton.classList.add('btn-primary');
+                alarmButton.classList.remove('btn-accent');
+            } else {
+                alarmButton.innerHTML = '<span class="status-indicator status-off"></span> Off';
+                alarmButton.classList.remove('btn-primary');
+                alarmButton.classList.add('btn-accent');
+            }
+        }
+
+        function checkAlarm(hours, minutes) {
+            if (!alarmActive || !alarmTime) return;
+            
+            if (parseInt(hours) === alarmTime.hour && parseInt(minutes) === alarmTime.minute) {
+                playAlarmSound();
+                alarmActive = false;
+                updateAlarmButton();
+                
+                // عرض تنبيه
+                if (Notification.permission === 'granted') {
+                    new Notification('Alarm', {
+                        body: `It's time! ${hours}:${minutes}`,
+                        icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiMwMDcyZmYiLz4KPHBhdGggZD0iTTMyIDQwQzM1LjMxMzcgNDAgMzggMzcuMzEzNyAzOCAzNFYyMkMzOCAxOC42ODYzIDM1LjMxMzcgMTYgMzIgMTZDMjguNjg2MyAxNiAyNiAxOC42ODYzIDI2IDIyVjM0QzI2IDM3LjMxMzcgMjguNjg2MyA0MCAzMiA0MFoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0zNiA0NkgyOEMyNi44OTU0IDQ2IDI2IDQ1LjEwNDYgMjYgNDRWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzZIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWMzRIMzZWM
