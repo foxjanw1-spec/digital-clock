@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ساعة عبدالحميد</title>
+
+  <!-- تحسينات لمحركات البحث -->
+  <meta name="description" content="ساعة رقمية عربية بتنسيق 12 و24 ساعة، تعرض الوقت والتاريخ بشكل أنيق.">
+  <meta name="keywords" content="ساعة رقمية, ساعة عربية, ساعة عبدالحميد, ساعة متجاوبة, ساعة للجوال, ساعة HTML">
+  <meta name="author" content="عبدالحميد">
+
+  <!-- خطوط مميزة -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Cairo:wght@700&display=swap" rel="stylesheet">
 
   <style>
@@ -17,6 +24,7 @@
       background-color: #000;
       overflow: hidden;
       font-family: 'Orbitron', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     .clock {
@@ -30,7 +38,6 @@
         0 0 80px rgba(255,255,255,0.15);
     }
 
-    /* الانعكاس أسفل الأرقام */
     .clock::after {
       content: attr(data-time);
       position: absolute;
@@ -61,22 +68,63 @@
       letter-spacing: 2px;
       text-shadow: 0 0 15px #fff;
     }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #fff;
+      color: #000;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .light-mode {
+      background-color: #f0f0f0;
+      color: #000;
+    }
+
+    .light-mode .clock {
+      color: #000;
+      text-shadow: none;
+    }
+
+    .light-mode .date,
+    .light-mode footer {
+      color: #333;
+      text-shadow: none;
+    }
   </style>
 </head>
 <body>
   <div class="clock" id="clock" data-time="00:00:00">00:00:00</div>
   <div class="date" id="date">الأحد، 19 أكتوبر 2025</div>
+
+  <button onclick="toggleFormat()">تبديل 12/24 ساعة</button>
+  <button onclick="toggleTheme()">تغيير الخلفية</button>
+
   <footer>『عـبـدالـحـمـيـد』</footer>
 
   <script>
-    function pad(n) { return n.toString().padStart(2, '0'); }
+    let is24Hour = true;
+
+    function pad(n) {
+      return n.toString().padStart(2, '0');
+    }
 
     function updateClock() {
       const now = new Date();
-      const h = pad(now.getHours());
-      const m = pad(now.getMinutes());
-      const s = pad(now.getSeconds());
-      const timeString = `${h}:${m}:${s}`;
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      let seconds = now.getSeconds();
+
+      if (!is24Hour) {
+        hours = hours % 12 || 12;
+      }
+
+      const timeString = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
       const clock = document.getElementById('clock');
       clock.textContent = timeString;
       clock.setAttribute('data-time', timeString);
@@ -88,6 +136,14 @@
       const month = months[now.getMonth()];
       const year = now.getFullYear();
       document.getElementById('date').textContent = `${dayName}، ${day} ${month} ${year}`;
+    }
+
+    function toggleFormat() {
+      is24Hour = !is24Hour;
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
     }
 
     setInterval(updateClock, 1000);
