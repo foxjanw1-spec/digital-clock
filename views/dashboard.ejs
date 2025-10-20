@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <h1>لوحة التحكم</h1>
+        <a href="/logout">تسجيل الخروج</a>
+    </header>
+
+    <main>
+        <section class="upload-section">
+            <h2>رفع ملف جديد</h2>
+            <form method="POST" action="/upload" enctype="multipart/form-data">
+                <label for="file">اختر ملف:</label>
+                <input type="file" name="file" id="file" required><br><br>
+                <input type="submit" value="رفع الملف">
+            </form>
+        </section>
+
+        <section class="files-section">
+            <h2>ملفاتك</h2>
+            <% if (files.length > 0) { %>
+                <ul>
+                    <% files.forEach(function(file) { %>
+                        <li><%= file.name %></li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>لا توجد ملفات حتى الآن.</p>
+            <% } %>
+        </section>
+    </main>
+
+    <footer>
+        <p>من إعداد Abdulhamid – مخصص لطلاب علوم الحاسوب</p>
+    </footer>
+</body>
+</html>
