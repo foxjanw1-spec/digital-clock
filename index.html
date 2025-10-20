@@ -3,255 +3,594 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مخصص لطلاب علوم الحاسوب - من إعداد Abdulhamid</title>
+    <title>CloudLearn | منصة علوم الحاسوب</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Same CSS from previous code */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 2rem;
             direction: rtl;
         }
 
-        header {
-            background-color: #007BFF;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        header h1 {
-            margin-bottom: 0.5rem;
-        }
-
-        main {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 1rem;
         }
 
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        .file-item {
-            background-color: white;
-            border-radius: 5px;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .file-item:hover {
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-3px);
         }
 
-        .file-item img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 3px;
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
         }
 
-        .file-item p {
-            margin-top: 0.5rem;
-            font-size: 0.9em;
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            margin-right: 1rem;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .gallery-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .section-title {
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .file-icon {
+            background: var(--primary);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .file-info {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        #viewSharedFilesBtn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 1rem;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+        .file-meta {
+            font-size: 0.8rem;
+            color: var(--gray);
         }
 
-        #viewSharedFilesBtn:hover {
-            background-color: #218838;
+        .file-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .file-actions button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.3rem 0.8rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .file-actions button:hover {
+            background: var(--secondary);
         }
 
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
-            background-color: white;
-            margin: 10% auto;
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
             padding: 2rem;
-            border-radius: 5px;
-            width: 80%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: modalOpen 0.3s ease;
         }
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
+        @keyframes modalOpen {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
             cursor: pointer;
+            color: var(--gray);
         }
 
-        .close:hover {
-            color: black;
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .modal form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal input {
+            padding: 0.8rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .modal button {
+            padding: 0.8rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .modal button:hover {
+            background: var(--secondary);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
         }
 
         footer {
-            background-color: #333;
-            color: white;
             text-align: center;
-            padding: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 2rem 0;
             margin-top: 2rem;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            header {
+                flex-direction: column;
+                gap: 1rem;
             }
-
-            main {
-                padding: 0 0.5rem;
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .btn-outline {
+                margin-right: 0;
+                margin-top: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>مخصص لطلاب علوم الحاسوب</h1>
-        <p>من إعداد Abdulhamid</p>
-    </header>
-
-    <main>
-        <div id="publicGallery" class="gallery">
-            <p id="loadingMessage">جارٍ تحميل الملفات...</p>
-        </div>
-
-        <button id="viewSharedFilesBtn">تصفح الملفات المشتركة</button>
-
-        <div id="loginModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>الدخول إلى لوحة التحكم</h2>
-                <form id="loginForm">
-                    <label for="masterPassword">كلمة المرور الرئيسية:</label>
-                    <input type="password" id="masterPassword" required>
-                    <button type="submit">دخول</button>
-                </form>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cloud"></i>
+                <h1>Cloud<span>Learn</span></h1>
             </div>
+            <div class="nav-links">
+                <a href="#"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="#gallery"><i class="fas fa-folder-open"></i> الملفات</a>
+                <a href="#"><i class="fas fa-user"></i> حسابي</a>
+                <a href="#"><i class="fas fa-info-circle"></i> عن الموقع</a>
+            </div>
+        </header>
+
+        <section class="hero">
+            <h2>منصة تعليمية متقدمة لطلاب علوم الحاسوب</h2>
+            <p>تخزين آمن وتنظيم متكامل لجميع ملفاتك الأكاديمية. مشاركة سهلة مع أمان عالي.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-outline" id="viewFilesBtn">تصفح الملفات</button>
+                <button class="btn" id="loginBtn">دخول لوحة التحكم</button>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>أمان عالي</h3>
+                <p>حماية موثوقة لجميع ملفاتك باستخدام كلمات مرور متقدمة.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-sync-alt"></i>
+                <h3>متزامن</h3>
+                <p>الوصول إلى ملفاتك من أي مكان وجميع الأجهزة.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-share-alt"></i>
+                <h3>مشاركة سهلة</h3>
+                <p>شارك الملفات مع زملائك بسهولة وبدون تعقيدات.</p>
+            </div>
+        </section>
+
+        <section class="gallery-section" id="gallery">
+            <h2 class="section-title">الملفات المشتركة</h2>
+            <div class="gallery" id="fileGallery">
+                <!-- Files will be loaded here -->
+            </div>
+        </section>
+    </div>
+
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>دخول لوحة التحكم</h2>
+            <form id="loginForm">
+                <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" required>
+                <button type="submit">دخول</button>
+            </form>
         </div>
-    </main>
+    </div>
+
+    <div class="notification" id="notification"></div>
 
     <footer>
         <p>من إعداد Abdulhamid – مخصص لطلاب علوم الحاسوب</p>
+        <p>© 2023 CloudLearn. جميع الحقوق محفوظة.</p>
     </footer>
 
     <script>
-        // --- إعدادات مبدئية ---
-        // نستخدم localStorage لتخزين كلمة المرور
-        let storedPassword = localStorage.getItem('masterPassword');
-        if (!storedPassword) {
-             // إذا لم تكن موجودة، نضع كلمة مرور افتراضية
-             storedPassword = "defaultPassword123";
-             localStorage.setItem('masterPassword', storedPassword);
-        }
-
-        const sharedFilesData = JSON.parse(localStorage.getItem('sharedFiles')) || [
-            { name: "ملزم الرياضيات.pdf", url: "#", type: "pdf" },
-            { name: "فيديو شرح الخوارزميات.mp4", url: "#", type: "video" },
-            { name: "مشروع تطبيقي.zip", url: "#", type: "zip" },
-            { name: "صور الشرح.png", url: "#", type: "image" },
-            { name: "ملزم البرمجة.pdf", url: "#", type: "pdf" },
+        // كلمة المرور المطلوبة
+        const correctPassword = "222";
+        
+        // بيانات الملفات المشتركة
+        const sharedFiles = [
+            { name: "ملزم الرياضيات.pdf", type: "pdf", size: "2.4 MB", icon: "fa-file-pdf" },
+            { name: "فيديو شرح الخوارزميات.mp4", type: "video", size: "45.2 MB", icon: "fa-file-video" },
+            { name: "مشروع تطبيقي.zip", type: "zip", size: "12.8 MB", icon: "fa-file-archive" },
+            { name: "صور الشرح.png", type: "image", size: "1.2 MB", icon: "fa-file-image" },
+            { name: "ملزم البرمجة.pdf", type: "pdf", size: "3.1 MB", icon: "fa-file-pdf" },
+            { name: "ملزم قواعد البيانات.sql", type: "sql", size: "0.8 MB", icon: "fa-file-code" },
+            { name: "شرح الذكاء الاصطناعي.pptx", type: "ppt", size: "5.6 MB", icon: "fa-file-powerpoint" },
+            { name: "مشروع الشبكات.rar", type: "rar", size: "22.1 MB", icon: "fa-file-archive" }
         ];
 
-        // --- عناصر DOM ---
+        // عناصر DOM
         const loginModal = document.getElementById('loginModal');
-        const viewSharedFilesBtn = document.getElementById('viewSharedFilesBtn');
-        const closeModalSpan = document.querySelector('.close');
+        const loginBtn = document.getElementById('loginBtn');
+        const viewFilesBtn = document.getElementById('viewFilesBtn');
+        const closeBtn = document.querySelector('.close-modal');
         const loginForm = document.getElementById('loginForm');
-        const masterPasswordInput = document.getElementById('masterPassword');
-        const publicGallery = document.getElementById('publicGallery');
-        const loadingMessage = document.getElementById('loadingMessage');
+        const passwordInput = document.getElementById('passwordInput');
+        const fileGallery = document.getElementById('fileGallery');
+        const notification = document.getElementById('notification');
 
-        // --- إظهار/إخفاء الواجهة العامة ---
-        function showPublicGallery() {
-            if (sharedFilesData.length > 0) {
-                loadingMessage.style.display = 'none';
-                sharedFilesData.forEach((file, index) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'file-item';
-
-                    const icon = file.type === 'pdf' ? '📄' : file.type === 'video' ? '🎥' : file.type === 'zip' ? '📦' : '🖼️';
-                    fileItem.innerHTML = `
-                        <span style="font-size: 2em;">${icon}</span>
-                        <p>${file.name}</p>
-                        <a href="${file.url}" download="${file.name}">تنزيل</a>
-                    `;
-                    publicGallery.appendChild(fileItem);
-                });
-            } else {
-                loadingMessage.textContent = "لا توجد ملفات مشتركة حالياً.";
-            }
+        // عرض الملفات
+        function displayFiles() {
+            fileGallery.innerHTML = '';
+            sharedFiles.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-icon">
+                        <i class="fas ${file.icon}"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-meta">${file.type.toUpperCase()} • ${file.size}</div>
+                        <div class="file-actions">
+                            <button><i class="fas fa-download"></i> تنزيل</button>
+                        </div>
+                    </div>
+                `;
+                fileGallery.appendChild(fileItem);
+            });
         }
 
-        // --- إظهار نافذة تسجيل الدخول ---
-        viewSharedFilesBtn.addEventListener('click', () => {
-            loginModal.style.display = 'block';
+        // عرض الإشعارات
+        function showNotification(message, isSuccess = true) {
+            notification.textContent = message;
+            notification.className = 'notification';
+            if (isSuccess) {
+                notification.classList.add('success');
+            } else {
+                notification.classList.add('error');
+            }
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // إظهار نافذة تسجيل الدخول
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
         });
 
-        // --- إغلاق نافذة تسجيل الدخول ---
-        closeModalSpan.onclick = function() {
+        // إغلاق نافذة تسجيل الدخول
+        closeBtn.addEventListener('click', () => {
             loginModal.style.display = 'none';
-        }
+        });
 
-        // --- معالجة تسجيل الدخول ---
-        loginForm.addEventListener('submit', function(e) {
+        // تسجيل الدخول
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const enteredPassword = masterPasswordInput.value;
-
-            if (enteredPassword === storedPassword) {
-                alert("تم الدخول بنجاح!");
+            const password = passwordInput.value;
+            
+            if (password === correctPassword) {
+                showNotification('تم الدخول بنجاح!');
                 loginModal.style.display = 'none';
-                masterPasswordInput.value = '';
-                // إعادة توجيه إلى لوحة التحكم
-                window.location.href = 'dashboard.html';
+                passwordInput.value = '';
+                
+                // إعادة توجيه إلى صفحة لوحة التحكم (في تطبيق حقيقي)
+                // window.location.href = 'dashboard.html';
+                alert('لقد دخلت بنجاح! يمكنك الآن إدارة ملفاتك.');
             } else {
-                alert("كلمة المرور غير صحيحة!");
-                masterPasswordInput.value = '';
+                showNotification('كلمة المرور غير صحيحة!', false);
+                passwordInput.value = '';
             }
         });
 
-        // --- تحميل الواجهة العامة ---
+        // عرض الملفات عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
-            showPublicGallery();
+            displayFiles();
+        });
+
+        // عند النقر على زر "تصفح الملفات"
+        viewFilesBtn.addEventListener('click', () => {
+            showNotification('يمكنك الآن مشاهدة الملفات المشتركة.');
+        });
+
+        // إغلاق النافذة عند النقر خارجها
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
         });
     </script>
 </body>
