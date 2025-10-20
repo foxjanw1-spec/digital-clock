@@ -4,7 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مخصص لطلاب علوم الحاسوب - من إعداد Abdulhamid</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            direction: rtl; /* توجيه النصوص إلى اليمين */
+        }
+
+        /* Header */
+        header {
+            background-color: #007BFF; /* لون أزرق تقني */
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        header h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            background-color: white;
+            border-radius: 5px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .file-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .file-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 3px;
+        }
+
+        .file-item p {
+            margin-top: 0.5rem;
+            font-size: 0.9em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Button */
+        #viewSharedFilesBtn {
+            background-color: #28a745; /* أخضر */
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #viewSharedFilesBtn:hover {
+            background-color: #218838; /* أخضر أغمق عند التمرير */
+        }
+
+        /* Modal */
+        .modal {
+            display: none; /* Initially hidden */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5); /* Semi-transparent black background */
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 5px;
+            width: 80%; /* Adjust as needed */
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* تقليل حجم العناصر في الشاشات الصغيرة */
+            }
+
+            main {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -39,228 +183,87 @@
         <p>من إعداد Abdulhamid – مخصص لطلاب علوم الحاسوب</p>
     </footer>
 
-    <script src="script.js"></script>
-</body>
-</html>/* styles.css */
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <script>
+        // --- إعدادات مبدئية ---
+        const masterPassword = "YourSecureMasterPassword"; // يجب تغيير هذا بمفتاح آمن حقيقي (يجب تخزينه على الخادم)
+        const sharedFilesData = [ // بيانات الملفات المشتركة (مثال)
+            { name: "ملزم الرياضيات.pdf", url: "#", type: "pdf" },
+            { name: "فيديو شرح الخوارزميات.mp4", url: "#", type: "video" },
+            { name: "مشروع تطبيقي.zip", url: "#", type: "zip" },
+            { name: "صور الشرح.png", url: "#", type: "image" },
+            { name: "ملزم البرمجة.pdf", url: "#", type: "pdf" },
+        ];
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-    direction: rtl; /* توجيه النصوص إلى اليمين */
-}
+        // --- عناصر DOM ---
+        const loginModal = document.getElementById('loginModal');
+        const viewSharedFilesBtn = document.getElementById('viewSharedFilesBtn');
+        const closeModalSpan = document.querySelector('.close');
+        const loginForm = document.getElementById('loginForm');
+        const masterPasswordInput = document.getElementById('masterPassword');
+        const publicGallery = document.getElementById('publicGallery');
+        const loadingMessage = document.getElementById('loadingMessage');
 
-/* Header */
-header {
-    background-color: #007BFF; /* لون أزرق تقني */
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
+        // --- إظهار/إخفاء الواجهة العامة ---
+        function showPublicGallery() {
+            // هنا يمكن إضافة منطق لعرض الملفات المشتركة
+            // نحن نعرض بيانات ثابتة الآن كمثال
+            if (sharedFilesData.length > 0) {
+                loadingMessage.style.display = 'none';
+                sharedFilesData.forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
 
-header h1 {
-    margin-bottom: 0.5rem;
-}
+                    // نموذج بسيط لعرض الملفات (يمكن تحسينه لعرض صور أو رموز مختلفة حسب النوع)
+                    const icon = file.type === 'pdf' ? '📄' : file.type === 'video' ? '🎥' : file.type === 'zip' ? '📦' : '🖼️';
+                    fileItem.innerHTML = `
+                        <span style="font-size: 2em;">${icon}</span>
+                        <p>${file.name}</p>
+                        <a href="${file.url}" download="${file.name}">تنزيل</a>
+                    `;
+                    publicGallery.appendChild(fileItem);
+                });
+            } else {
+                loadingMessage.textContent = "لا توجد ملفات مشتركة حالياً.";
+            }
+        }
 
-/* Main Content */
-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-/* Gallery */
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.file-item {
-    background-color: white;
-    border-radius: 5px;
-    padding: 1rem;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-}
-
-.file-item:hover {
-    transform: translateY(-3px);
-}
-
-.file-item img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 3px;
-}
-
-.file-item p {
-    margin-top: 0.5rem;
-    font-size: 0.9em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Button */
-#viewSharedFilesBtn {
-    background-color: #28a745; /* أخضر */
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 1rem;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#viewSharedFilesBtn:hover {
-    background-color: #218838; /* أخضر أغمق عند التمرير */
-}
-
-/* Modal */
-.modal {
-    display: none; /* Initially hidden */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5); /* Semi-transparent black background */
-}
-
-.modal-content {
-    background-color: white;
-    margin: 10% auto;
-    padding: 2rem;
-    border-radius: 5px;
-    width: 80%; /* Adjust as needed */
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: black;
-}
-
-/* Footer */
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    margin-top: 2rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .gallery {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* تقليل حجم العناصر في الشاشات الصغيرة */
-    }
-
-    main {
-        padding: 0 0.5rem;
-    }
-}// script.js
-
-// --- إعدادات مبدئية ---
-const masterPassword = "YourSecureMasterPassword"; // يجب تغيير هذا بمفتاح آمن حقيقي (يجب تخزينه على الخادم)
-const sharedFilesData = [ // بيانات الملفات المشتركة (مثال)
-    { name: "ملزم الرياضيات.pdf", url: "#", type: "pdf" },
-    { name: "فيديو شرح الخوارزميات.mp4", url: "#", type: "video" },
-    { name: "مشروع تطبيقي.zip", url: "#", type: "zip" },
-    { name: "صور الشرح.png", url: "#", type: "image" },
-    { name: "ملزم البرمجة.pdf", url: "#", type: "pdf" },
-];
-
-// --- عناصر DOM ---
-const loginModal = document.getElementById('loginModal');
-const viewSharedFilesBtn = document.getElementById('viewSharedFilesBtn');
-const closeModalSpan = document.querySelector('.close');
-const loginForm = document.getElementById('loginForm');
-const masterPasswordInput = document.getElementById('masterPassword');
-const publicGallery = document.getElementById('publicGallery');
-const loadingMessage = document.getElementById('loadingMessage');
-
-// --- إظهار/إخفاء الواجهة العامة ---
-function showPublicGallery() {
-    // هنا يمكن إضافة منطق لعرض الملفات المشتركة
-    // نحن نعرض بيانات ثابتة الآن كمثال
-    if (sharedFilesData.length > 0) {
-        loadingMessage.style.display = 'none';
-        sharedFilesData.forEach(file => {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-
-            // نموذج بسيط لعرض الملفات (يمكن تحسينه لعرض صور أو رموز مختلفة حسب النوع)
-            const icon = file.type === 'pdf' ? '📄' : file.type === 'video' ? '🎥' : file.type === 'zip' ? '📦' : '🖼️';
-            fileItem.innerHTML = `
-                <span style="font-size: 2em;">${icon}</span>
-                <p>${file.name}</p>
-                <a href="${file.url}" download="${file.name}">تنزيل</a>
-            `;
-            publicGallery.appendChild(fileItem);
+        // --- إظهار نافذة تسجيل الدخول ---
+        viewSharedFilesBtn.addEventListener('click', () => {
+            loginModal.style.display = 'block';
         });
-    } else {
-        loadingMessage.textContent = "لا توجد ملفات مشتركة حالياً.";
-    }
-}
 
-// --- إظهار نافذة تسجيل الدخول ---
-viewSharedFilesBtn.addEventListener('click', () => {
-    loginModal.style.display = 'block';
-});
+        // --- إغلاق نافذة تسجيل الدخول ---
+        closeModalSpan.onclick = function() {
+            loginModal.style.display = 'none';
+        }
 
-// --- إغلاق نافذة تسجيل الدخول ---
-closeModalSpan.onclick = function() {
-    loginModal.style.display = 'none';
-}
+        // --- معالجة تسجيل الدخول ---
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // منع إرسال النموذج الافتراضي
+            const enteredPassword = masterPasswordInput.value;
 
-// --- معالجة تسجيل الدخول ---
-loginForm.addEventListener('submit', function(e) {
-    e.preventDefault(); // منع إرسال النموذج الافتراضي
-    const enteredPassword = masterPasswordInput.value;
+            // --- التحقق من كلمة المرور ---
+            // ملاحظة: في تطبيق حقيقي، يجب التحقق من كلمة المرور على الخادم.
+            // هذا المثال يستخدم كلمة مرور ثابتة للتبسيط.
+            if (enteredPassword === masterPassword) {
+                alert("تم الدخول بنجاح! يمكنك الآن إدارة ملفاتك.");
+                loginModal.style.display = 'none';
+                masterPasswordInput.value = ''; // مسح حقل كلمة المرور بعد الدخول
+                // هنا يمكنك إظهار لوحة التحكم أو إعادة توجيه المستخدم
+                // window.location.href = 'dashboard.html'; // إعادة توجيه إلى لوحة التحكم (يجب إنشاؤها)
+                // لنقوم بعرض رسالة توضيحية بدلاً من ذلك في هذا المثال
+                alert("لإدارة الملفات، ستحتاج إلى تطوير الجزء الخلفي (Backend) للموقع.");
+            } else {
+                alert("كلمة المرور غير صحيحة!");
+                masterPasswordInput.value = ''; // مسح حقل كلمة المرور عند الخطأ
+            }
+        });
 
-    // --- التحقق من كلمة المرور ---
-    // ملاحظة: في تطبيق حقيقي، يجب التحقق من كلمة المرور على الخادم.
-    // هذا المثال يستخدم كلمة مرور ثابتة للتبسيط.
-    if (enteredPassword === masterPassword) {
-        alert("تم الدخول بنجاح! يمكنك الآن إدارة ملفاتك.");
-        loginModal.style.display = 'none';
-        masterPasswordInput.value = ''; // مسح حقل كلمة المرور بعد الدخول
-        // هنا يمكنك إظهار لوحة التحكم أو إعادة توجيه المستخدم
-        window.location.href = 'dashboard.html'; // إعادة توجيه إلى لوحة التحكم (يجب إنشاؤها)
-    } else {
-        alert("كلمة المرور غير صحيحة!");
-        masterPasswordInput.value = ''; // مسح حقل كلمة المرور عند الخطأ
-    }
-});
-
-// --- تحميل الواجهة العامة ---
-document.addEventListener('DOMContentLoaded', () => {
-    // تحميل الملفات المشتركة عند تحميل الصفحة
-    showPublicGallery();
-});
+        // --- تحميل الواجهة العامة ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // تحميل الملفات المشتركة عند تحميل الصفحة
+            showPublicGallery();
+        });
+    </script>
+</body>
+</html>
