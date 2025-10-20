@@ -3,304 +3,581 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - مخصص لطلاب علوم الحاسوب</title>
+    <title>لوحة التحكم - CloudLearn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Same CSS from index.html */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 2rem;
             direction: rtl;
         }
 
-        header {
-            background-color: #007BFF;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        header h1 {
-            margin-bottom: 0.5rem;
-        }
-
-        main {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 1rem;
         }
 
-        .section {
-            background-color: white;
-            border-radius: 5px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .section h2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .file-list {
-            list-style-type: none;
-        }
-
-        .file-item-dashboard {
-            padding: 0.5rem;
-            border-bottom: 1px solid #eee;
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
-        .file-item-dashboard:last-child {
-            border-bottom: none;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .file-info {
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .dashboard-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .section-title {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #388e3c;
+        }
+
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .file-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .file-details {
             flex-grow: 1;
         }
 
-        .file-actions button {
-            margin-left: 0.5rem;
-            padding: 0.25rem 0.5rem;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
         }
 
-        .btn-upload {
-            background-color: #17a2b8;
+        .file-meta {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .file-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .btn-download {
+            background: var(--success);
             color: white;
+        }
+
+        .btn-download:hover {
+            background: #388e3c;
         }
 
         .btn-delete {
-            background-color: #dc3545;
+            background: var(--danger);
             color: white;
         }
 
-        .btn-change-password {
-            background-color: #ffc107;
-            color: #212529;
-            margin-top: 0.5rem;
+        .btn-delete:hover {
+            background: #d32f2f;
         }
 
-        input[type="file"] {
-            margin-top: 0.5rem;
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
         }
 
-        #changePasswordForm {
-            display: none; /* Initially hidden */
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        .hidden {
+            display: none;
         }
 
         footer {
-            background-color: #333;
-            color: white;
             text-align: center;
-            padding: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 2rem 0;
             margin-top: 2rem;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
-            main {
-                padding: 0 0.5rem;
+            .dashboard-section {
+                padding: 1rem;
+            }
+            
+            .file-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cloud"></i>
+                <h1>Cloud<span>Learn</span></h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="index.html#gallery"><i class="fas fa-folder-open"></i> الملفات</a>
+                <a href="#"><i class="fas fa-user"></i> حسابي</a>
+                <a href="#"><i class="fas fa-info-circle"></i> عن الموقع</a>
+            </div>
+        </header>
 
-    <header>
-        <h1>لوحة التحكم</h1>
-        <p>مرحبًا بعودتك، Abdulhamid</p>
-    </header>
+        <section class="dashboard-section">
+            <h2 class="section-title"><i class="fas fa-cog"></i> لوحة التحكم</h2>
+            
+            <div class="card">
+                <h3><i class="fas fa-lock"></i> تغيير كلمة المرور</h3>
+                <div class="form-group">
+                    <label for="currentPassword">كلمة المرور الحالية:</label>
+                    <input type="password" id="currentPassword" placeholder="أدخل كلمة المرور الحالية">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">كلمة المرور الجديدة:</label>
+                    <input type="password" id="newPassword" placeholder="أدخل كلمة المرور الجديدة">
+                </div>
+                <button class="btn btn-success" id="changePasswordBtn">تغيير كلمة المرور</button>
+            </div>
 
-    <main>
-        <div class="section">
-            <h2>تغيير كلمة المرور</h2>
-            <form id="changePasswordForm">
-                <label for="currentPassword">كلمة المرور الحالية:</label><br>
-                <input type="password" id="currentPassword" required><br>
-                <label for="newPassword">كلمة المرور الجديدة:</label><br>
-                <input type="password" id="newPassword" required><br>
-                <button type="submit" class="btn-change-password">تغيير كلمة المرور</button>
-            </form>
-            <button id="showChangePasswordBtn" class="btn-change-password">تغيير كلمة المرور</button>
-        </div>
+            <div class="card">
+                <h3><i class="fas fa-upload"></i> رفع ملف جديد</h3>
+                <div class="form-group">
+                    <label for="fileInput">اختر ملفاتك:</label>
+                    <input type="file" id="fileInput" multiple>
+                </div>
+                <button class="btn btn-success" id="uploadBtn">رفع الملفات</button>
+                <div id="uploadStatus" style="margin-top: 1rem;"></div>
+            </div>
 
-        <div class="section">
-            <h2>رفع ملف</h2>
-            <input type="file" id="fileInput" multiple>
-            <button id="uploadButton" class="btn-upload">رفع الملفات</button>
-            <p id="uploadStatus"></p>
-        </div>
+            <div class="card">
+                <h3><i class="fas fa-file-alt"></i> ملفاتك الحالية</h3>
+                <div id="fileList" class="file-list">
+                    <!-- سيتم ملء هذه القائمة من خلال JavaScript -->
+                </div>
+            </div>
+        </section>
+    </div>
 
-        <div class="section">
-            <h2>ملفاتك</h2>
-            <ul id="fileList" class="file-list">
-                <!-- سيتم ملء هذه القائمة من خلال JavaScript -->
-            </ul>
-        </div>
-
-        <div class="section">
-            <button id="logoutButton">تسجيل الخروج</button>
-        </div>
-    </main>
+    <div class="notification" id="notification"></div>
 
     <footer>
         <p>من إعداد Abdulhamid – مخصص لطلاب علوم الحاسوب</p>
+        <p>© 2023 CloudLearn. جميع الحقوق محفوظة.</p>
     </footer>
 
     <script>
-        // --- إعدادات ---
-        let storedPassword = localStorage.getItem('masterPassword');
-        if (!storedPassword) {
-             storedPassword = "defaultPassword123";
-             localStorage.setItem('masterPassword', storedPassword);
-        }
+        // كلمة المرور المطلوبة
+        const correctPassword = "222";
+        
+        // بيانات الملفات
+        let files = JSON.parse(localStorage.getItem('sharedFiles')) || [
+            { name: "ملزم الرياضيات.pdf", type: "pdf", size: "2.4 MB", icon: "fa-file-pdf" },
+            { name: "فيديو شرح الخوارزميات.mp4", type: "video", size: "45.2 MB", icon: "fa-file-video" },
+            { name: "مشروع تطبيقي.zip", type: "zip", size: "12.8 MB", icon: "fa-file-archive" },
+            { name: "صور الشرح.png", type: "image", size: "1.2 MB", icon: "fa-file-image" },
+            { name: "ملزم البرمجة.pdf", type: "pdf", size: "3.1 MB", icon: "fa-file-pdf" }
+        ];
 
-        let files = JSON.parse(localStorage.getItem('sharedFiles')) || [];
-
-        // --- عناصر DOM ---
-        const fileInput = document.getElementById('fileInput');
-        const uploadButton = document.getElementById('uploadButton');
-        const fileList = document.getElementById('fileList');
-        const changePasswordForm = document.getElementById('changePasswordForm');
-        const showChangePasswordBtn = document.getElementById('showChangePasswordBtn');
-        const changePasswordFormElement = document.getElementById('changePasswordForm');
+        // عناصر DOM
         const currentPasswordInput = document.getElementById('currentPassword');
         const newPasswordInput = document.getElementById('newPassword');
-        const logoutButton = document.getElementById('logoutButton');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
         const uploadStatus = document.getElementById('uploadStatus');
+        const fileList = document.getElementById('fileList');
+        const notification = document.getElementById('notification');
 
-        // --- عرض قائمة الملفات ---
+        // عرض الإشعارات
+        function showNotification(message, isSuccess = true) {
+            notification.textContent = message;
+            notification.className = 'notification';
+            if (isSuccess) {
+                notification.classList.add('success');
+            } else {
+                notification.classList.add('error');
+            }
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // عرض قائمة الملفات
         function renderFileList() {
-            fileList.innerHTML = ''; // مسح القائمة الحالية
+            fileList.innerHTML = '';
+            
             if (files.length === 0) {
-                const emptyItem = document.createElement('li');
-                emptyItem.textContent = 'لا توجد ملفات.';
-                fileList.appendChild(emptyItem);
+                fileList.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--gray);">لا توجد ملفات.</p>';
                 return;
             }
 
             files.forEach((file, index) => {
-                const listItem = document.createElement('li');
-                listItem.className = 'file-item-dashboard';
-
-                const icon = file.type === 'pdf' ? '📄' : file.type === 'video' ? '🎥' : file.type === 'zip' ? '📦' : '🖼️';
-                listItem.innerHTML = `
-                    <div class="file-info">
-                        ${icon} ${file.name}
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-header">
+                        <div class="file-icon">
+                            <i class="fas ${file.icon}"></i>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-meta">${file.type.toUpperCase()} • ${file.size}</div>
+                        </div>
                     </div>
                     <div class="file-actions">
-                        <a href="#" onclick="downloadFile(${index})"><button>تنزيل</button></a>
-                        <button onclick="deleteFile(${index})">حذف</button>
+                        <button class="btn-download"><i class="fas fa-download"></i> تنزيل</button>
+                        <button class="btn-delete" data-index="${index}"><i class="fas fa-trash"></i> حذف</button>
                     </div>
                 `;
-                fileList.appendChild(listItem);
+                fileList.appendChild(fileItem);
+            });
+
+            // إضافة حدث للزرحذف
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.closest('.btn-delete').dataset.index);
+                    deleteFile(index);
+                });
             });
         }
 
-        // --- رفع الملفات ---
-        uploadButton.addEventListener('click', () => {
+        // حذف ملف
+        function deleteFile(index) {
+            if (confirm(`هل أنت متأكد من حذف "${files[index].name}"؟`)) {
+                files.splice(index, 1);
+                localStorage.setItem('sharedFiles', JSON.stringify(files));
+                renderFileList();
+                showNotification('تم حذف الملف بنجاح!');
+            }
+        }
+
+        // رفع ملفات
+        uploadBtn.addEventListener('click', () => {
             const filesToUpload = Array.from(fileInput.files);
             if (filesToUpload.length === 0) {
                 uploadStatus.textContent = 'يرجى اختيار ملفات أولاً.';
+                uploadStatus.style.color = 'var(--danger)';
                 return;
             }
 
-            // نقوم ببساطة إضافة الملفات إلى القائمة (في تطبيق حقيقي، يجب رفعها إلى خادم)
             filesToUpload.forEach(file => {
-                // هنا نقوم بإنشاء كائن ملف بسيط
-                // في تطبيق حقيقي، يجب تحميل الملف إلى خادم وحفظ مساره
                 const newFile = {
                     name: file.name,
-                    type: file.type.split('/')[1] || 'unknown', // الحصول على نوع الملف (pdf, mp4, ...)
-                    size: file.size,
-                    // في تطبيق حقيقي، سيكون هناك مسار أو رابط للملف
-                    url: URL.createObjectURL(file) // هذا فقط لعرضه في المتصفح (غير مناسب للتخزين الفعلي)
+                    type: file.type.split('/')[1] || 'unknown',
+                    size: formatFileSize(file.size),
+                    icon: getFileIcon(file.type.split('/')[1] || 'unknown')
                 };
                 files.push(newFile);
             });
 
-            localStorage.setItem('sharedFiles', JSON.stringify(files)); // حفظ في localStorage
-            renderFileList(); // تحديث القائمة
-            fileInput.value = ''; // مسح الملفات المختارة
-            uploadStatus.textContent = `تم رفع ${filesToUpload.length} ملف(ات).`;
+            localStorage.setItem('sharedFiles', JSON.stringify(files));
+            renderFileList();
+            fileInput.value = '';
+            uploadStatus.textContent = `تم رفع ${filesToUpload.length} ملف(ات) بنجاح.`;
+            uploadStatus.style.color = 'var(--success)';
+            showNotification(`تم رفع ${filesToUpload.length} ملف(ات) بنجاح!`);
         });
 
-        // --- حذف ملف ---
-        function deleteFile(index) {
-            if (confirm(`هل أنت متأكد من حذف "${files[index].name}"؟`)) {
-                files.splice(index, 1); // حذف الملف من المصفوفة
-                localStorage.setItem('sharedFiles', JSON.stringify(files)); // حفظ التغييرات
-                renderFileList(); // تحديث القائمة
-            }
-        }
-
-        // --- تنزيل ملف ---
-        function downloadFile(index) {
-            // في هذا المثال، نستخدم URL.createObjectURL الذي تم إنشاؤه عند الرفع
-            // لكن في تطبيق حقيقي، يجب أن يكون هناك رابط مباشر للملف
-            const fileUrl = files[index].url;
-            if (fileUrl) {
-                const link = document.createElement('a');
-                link.href = fileUrl;
-                link.download = files[index].name;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                alert("لا يمكن تنزيل هذا الملف في هذا الوقت.");
-            }
-        }
-
-        // --- تغيير كلمة المرور ---
-        showChangePasswordBtn.addEventListener('click', () => {
-            changePasswordForm.style.display = 'block';
-            showChangePasswordBtn.style.display = 'none';
-        });
-
-        changePasswordFormElement.addEventListener('submit', (e) => {
-            e.preventDefault();
+        // تغيير كلمة المرور
+        changePasswordBtn.addEventListener('click', () => {
             const currentPassword = currentPasswordInput.value;
             const newPassword = newPasswordInput.value;
 
-            if (currentPassword !== storedPassword) {
-                alert("كلمة المرور الحالية غير صحيحة.");
+            if (currentPassword !== correctPassword) {
+                showNotification('كلمة المرور الحالية غير صحيحة!', false);
                 return;
             }
 
             if (newPassword.length < 6) {
-                alert("كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف.");
+                showNotification('كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف.', false);
                 return;
             }
 
-            storedPassword = newPassword;
-            localStorage.setItem('masterPassword', storedPassword);
-            alert("تم تغيير كلمة المرور بنجاح!");
-            changePasswordForm.style.display = 'none';
-            showChangePasswordBtn.style.display = 'inline-block';
+            // في تطبيق حقيقي، يجب تشفير كلمة المرور
+            localStorage.setItem('masterPassword', newPassword);
+            showNotification('تم تغيير كلمة المرور بنجاح!');
             currentPasswordInput.value = '';
             newPasswordInput.value = '';
         });
 
-        // --- تسجيل الخروج ---
-        logoutButton.addEventListener('click', () => {
-            alert("تم تسجيل الخروج.");
-            window.location.href = 'index.html'; // إعادة توجيه إلى الصفحة الرئيسية
-        });
+        // تنسيق حجم الملف
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
 
-        // --- تحميل القائمة عند تحميل الصفحة ---
+        // الحصول على أيقونة الملف
+        function getFileIcon(type) {
+            const iconMap = {
+                'pdf': 'fa-file-pdf',
+                'jpg': 'fa-file-image',
+                'jpeg': 'fa-file-image',
+                'png': 'fa-file-image',
+                'mp4': 'fa-file-video',
+                'mov': 'fa-file-video',
+                'avi': 'fa-file-video',
+                'zip': 'fa-file-archive',
+                'rar': 'fa-file-archive',
+                'doc': 'fa-file-word',
+                'docx': 'fa-file-word',
+                'xls': 'fa-file-excel',
+                'xlsx': 'fa-file-excel',
+                'ppt': 'fa-file-powerpoint',
+                'pptx': 'fa-file-powerpoint',
+                'txt': 'fa-file-alt',
+                'js': 'fa-file-code',
+                'html': 'fa-file-code',
+                'css': 'fa-file-code',
+                'py': 'fa-file-code',
+                'java': 'fa-file-code',
+                'sql': 'fa-file-code'
+            };
+            return iconMap[type] || 'fa-file';
+        }
+
+        // تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
             renderFileList();
         });
