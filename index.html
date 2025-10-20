@@ -1,184 +1,266 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-<meta name="google-site-verification" content="VYcaCJjcnZbv8EqgqXiMIDS0SqmNFIK-uujOdCBb7jA" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Abdulhamid Vault</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background: radial-gradient(circle at top left, #0f172a, #1e293b);
-      font-family: 'Segoe UI', sans-serif;
-      color: #f1f5f9;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .gold {
-      color: #facc15;
-    }
-    .input {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      padding: 0.75rem;
-      border-radius: 10px;
-      width: 100%;
-      color: #f1f5f9;
-    }
-    .input::placeholder {
-      color: #94a3b8;
-    }
-    .btn {
-      background: linear-gradient(to right, #facc15, #fbbf24);
-      color: #1e293b;
-      font-weight: bold;
-      padding: 0.75rem;
-      border-radius: 10px;
-      width: 100%;
-      transition: transform 0.2s;
-    }
-    .btn:hover {
-      transform: scale(1.03);
-    }
-    .btn-secondary {
-      background: #334155;
-      color: #f1f5f9;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مخصص لطلاب علوم الحاسوب - من إعداد Abdulhamid</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="p-6">
-  <div class="max-w-md mx-auto">
-    <div class="card mb-6">
-      <h1 class="text-2xl font-bold gold mb-2">تسجيل الدخول للمسؤول</h1>
-      <p class="text-sm text-slate-400 mb-4">أدخل رقم الهاتف وكلمة السر الخاصة بالحساب الإداري.</p>
-      <label class="block text-sm mb-1">رقم الهاتف</label>
-      <input type="tel" id="phone" class="input mb-3" placeholder="77XXXXXXX" />
-      <label class="block text-sm mb-1">كلمة السر</label>
-      <input type="password" id="password" class="input mb-4" placeholder="••••••••" />
-      <button class="btn mb-2" onclick="login()">دخول المسؤول</button>
-      <button class="btn btn-secondary" onclick="enterVisitor()">دخول كزائر</button>
-    </div>
+<body>
 
-    <div id="adminPanel" class="card hidden">
-      <h2 class="text-xl font-bold gold mb-4">لوحة المدير</h2>
-      <input type="file" id="fileInput" multiple class="mb-3" />
-      <button class="btn mb-4" onclick="uploadFiles()">رفع الملفات</button>
-      <div id="fileList" class="space-y-2"></div>
-    </div>
+    <header>
+        <h1>مخصص لطلاب علوم الحاسوب</h1>
+        <p>من إعداد Abdulhamid</p>
+    </header>
 
-    <div id="visitorPanel" class="card hidden">
-      <h2 class="text-xl font-bold gold mb-4">لوحة الزائر</h2>
-      <div id="visitorFiles" class="space-y-2"></div>
-    </div>
-  </div>
+    <main>
+        <div id="publicGallery" class="gallery">
+            <!-- سيتم ملء هذا الجزء بالملفات المشتركة من خلال JavaScript -->
+            <p id="loadingMessage">جارٍ تحميل الملفات...</p>
+        </div>
 
-  <script>
-    const adminPassword = "ab200631";
-    const downloadCode = "222";
+        <button id="viewSharedFilesBtn">تصفح الملفات المشتركة</button>
 
-    function saveFiles(files) {
-      localStorage.setItem("vaultFiles", JSON.stringify(files));
-    }
+        <!-- نموذج تسجيل الدخول (يظهر عند النقر على الزر) -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>الدخول إلى لوحة التحكم</h2>
+                <form id="loginForm">
+                    <label for="masterPassword">كلمة المرور الرئيسية:</label>
+                    <input type="password" id="masterPassword" required>
+                    <button type="submit">دخول</button>
+                </form>
+            </div>
+        </div>
+    </main>
 
-    function loadFiles() {
-      return JSON.parse(localStorage.getItem("vaultFiles") || "[]");
-    }
+    <footer>
+        <p>من إعداد Abdulhamid – مخصص لطلاب علوم الحاسوب</p>
+    </footer>
 
-    function login() {
-      const pass = document.getElementById("password").value.trim();
-      if (pass === adminPassword) {
-        document.getElementById("adminPanel").classList.remove("hidden");
-        document.getElementById("visitorPanel").classList.add("hidden");
-        renderAdminFiles();
-      } else {
-        alert("كلمة السر غير صحيحة.");
-      }
-    }
-
-    function enterVisitor() {
-      document.getElementById("adminPanel").classList.add("hidden");
-      document.getElementById("visitorPanel").classList.remove("hidden");
-      renderVisitorFiles();
-    }
-
-    function uploadFiles() {
-      const input = document.getElementById("fileInput");
-      const selectedFiles = Array.from(input.files);
-      const files = loadFiles();
-      selectedFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          files.push({
-            name: file.name,
-            type: file.type,
-            data: e.target.result,
-            time: new Date().toLocaleString()
-          });
-          saveFiles(files);
-          renderAdminFiles();
-        };
-        reader.readAsDataURL(file);
-      });
-      input.value = "";
-    }
-
-    function renderAdminFiles() {
-      const files = loadFiles();
-      const list = document.getElementById("fileList");
-      list.innerHTML = "";
-      files.forEach((file, index) => {
-        const div = document.createElement("div");
-        div.className = "bg-slate-800 p-3 rounded";
-        div.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span>${file.name}</span>
-            <a href="${file.data}" download="${file.name}" class="text-yellow-400 text-sm">تحميل</a>
-          </div>
-          <div class="text-xs text-slate-400 mt-1">${file.time}</div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    function renderVisitorFiles() {
-      const files = loadFiles();
-      const list = document.getElementById("visitorFiles");
-      list.innerHTML = "";
-      files.forEach((file, index) => {
-        const div = document.createElement("div");
-        div.className = "bg-slate-800 p-3 rounded";
-        div.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span>${file.name}</span>
-            <button onclick="requestDownload(${index})" class="text-yellow-400 text-sm">طلب تحميل</button>
-          </div>
-          <div class="text-xs text-slate-400 mt-1">${file.time}</div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    function requestDownload(index) {
-      const code = prompt("أدخل رمز التحقق لتنزيل الملف:");
-      if (code === downloadCode) {
-        const files = loadFiles();
-        const file = files[index];
-        const a = document.createElement("a");
-        a.href = file.data;
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      } else {
-        alert("رمز غير صحيح.");
-      }
-    }
-  </script>
+    <script src="script.js"></script>
 </body>
-</html>
+</html>/* styles.css */
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    direction: rtl; /* توجيه النصوص إلى اليمين */
+}
+
+/* Header */
+header {
+    background-color: #007BFF; /* لون أزرق تقني */
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+header h1 {
+    margin-bottom: 0.5rem;
+}
+
+/* Main Content */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Gallery */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.file-item {
+    background-color: white;
+    border-radius: 5px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.file-item:hover {
+    transform: translateY(-3px);
+}
+
+.file-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 3px;
+}
+
+.file-item p {
+    margin-top: 0.5rem;
+    font-size: 0.9em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Button */
+#viewSharedFilesBtn {
+    background-color: #28a745; /* أخضر */
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#viewSharedFilesBtn:hover {
+    background-color: #218838; /* أخضر أغمق عند التمرير */
+}
+
+/* Modal */
+.modal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent black background */
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 5px;
+    width: 80%; /* Adjust as needed */
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* تقليل حجم العناصر في الشاشات الصغيرة */
+    }
+
+    main {
+        padding: 0 0.5rem;
+    }
+}// script.js
+
+// --- إعدادات مبدئية ---
+const masterPassword = "YourSecureMasterPassword"; // يجب تغيير هذا بمفتاح آمن حقيقي (يجب تخزينه على الخادم)
+const sharedFilesData = [ // بيانات الملفات المشتركة (مثال)
+    { name: "ملزم الرياضيات.pdf", url: "#", type: "pdf" },
+    { name: "فيديو شرح الخوارزميات.mp4", url: "#", type: "video" },
+    { name: "مشروع تطبيقي.zip", url: "#", type: "zip" },
+    { name: "صور الشرح.png", url: "#", type: "image" },
+    { name: "ملزم البرمجة.pdf", url: "#", type: "pdf" },
+];
+
+// --- عناصر DOM ---
+const loginModal = document.getElementById('loginModal');
+const viewSharedFilesBtn = document.getElementById('viewSharedFilesBtn');
+const closeModalSpan = document.querySelector('.close');
+const loginForm = document.getElementById('loginForm');
+const masterPasswordInput = document.getElementById('masterPassword');
+const publicGallery = document.getElementById('publicGallery');
+const loadingMessage = document.getElementById('loadingMessage');
+
+// --- إظهار/إخفاء الواجهة العامة ---
+function showPublicGallery() {
+    // هنا يمكن إضافة منطق لعرض الملفات المشتركة
+    // نحن نعرض بيانات ثابتة الآن كمثال
+    if (sharedFilesData.length > 0) {
+        loadingMessage.style.display = 'none';
+        sharedFilesData.forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+
+            // نموذج بسيط لعرض الملفات (يمكن تحسينه لعرض صور أو رموز مختلفة حسب النوع)
+            const icon = file.type === 'pdf' ? '📄' : file.type === 'video' ? '🎥' : file.type === 'zip' ? '📦' : '🖼️';
+            fileItem.innerHTML = `
+                <span style="font-size: 2em;">${icon}</span>
+                <p>${file.name}</p>
+                <a href="${file.url}" download="${file.name}">تنزيل</a>
+            `;
+            publicGallery.appendChild(fileItem);
+        });
+    } else {
+        loadingMessage.textContent = "لا توجد ملفات مشتركة حالياً.";
+    }
+}
+
+// --- إظهار نافذة تسجيل الدخول ---
+viewSharedFilesBtn.addEventListener('click', () => {
+    loginModal.style.display = 'block';
+});
+
+// --- إغلاق نافذة تسجيل الدخول ---
+closeModalSpan.onclick = function() {
+    loginModal.style.display = 'none';
+}
+
+// --- معالجة تسجيل الدخول ---
+loginForm.addEventListener('submit', function(e) {
+    e.preventDefault(); // منع إرسال النموذج الافتراضي
+    const enteredPassword = masterPasswordInput.value;
+
+    // --- التحقق من كلمة المرور ---
+    // ملاحظة: في تطبيق حقيقي، يجب التحقق من كلمة المرور على الخادم.
+    // هذا المثال يستخدم كلمة مرور ثابتة للتبسيط.
+    if (enteredPassword === masterPassword) {
+        alert("تم الدخول بنجاح! يمكنك الآن إدارة ملفاتك.");
+        loginModal.style.display = 'none';
+        masterPasswordInput.value = ''; // مسح حقل كلمة المرور بعد الدخول
+        // هنا يمكنك إظهار لوحة التحكم أو إعادة توجيه المستخدم
+        window.location.href = 'dashboard.html'; // إعادة توجيه إلى لوحة التحكم (يجب إنشاؤها)
+    } else {
+        alert("كلمة المرور غير صحيحة!");
+        masterPasswordInput.value = ''; // مسح حقل كلمة المرور عند الخطأ
+    }
+});
+
+// --- تحميل الواجهة العامة ---
+document.addEventListener('DOMContentLoaded', () => {
+    // تحميل الملفات المشتركة عند تحميل الصفحة
+    showPublicGallery();
+});
