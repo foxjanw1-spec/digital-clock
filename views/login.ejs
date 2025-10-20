@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل الدخول</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>دخول لوحة التحكم</h2>
+        <% if (error) { %>
+            <div class="alert alert-error"><%= error %></div>
+        <% } %>
+        <form method="POST" action="/login">
+            <label for="password">كلمة المرور:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+            <input type="submit" value="دخول">
+        </form>
+    </div>
+</body>
+</html>
