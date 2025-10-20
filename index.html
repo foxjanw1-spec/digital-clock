@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مخصص لطلاب علوم الحاسوب - من إعداد Abdulhamid</title>
     <style>
-        /* Reset and base styles */
+        /* Same CSS from previous code */
         * {
             margin: 0;
             padding: 0;
@@ -17,12 +17,11 @@
             background-color: #f4f4f4;
             color: #333;
             line-height: 1.6;
-            direction: rtl; /* توجيه النصوص إلى اليمين */
+            direction: rtl;
         }
 
-        /* Header */
         header {
-            background-color: #007BFF; /* لون أزرق تقني */
+            background-color: #007BFF;
             color: white;
             text-align: center;
             padding: 1rem;
@@ -33,14 +32,12 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Main Content */
         main {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 1rem;
         }
 
-        /* Gallery */
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -75,9 +72,8 @@
             white-space: nowrap;
         }
 
-        /* Button */
         #viewSharedFilesBtn {
-            background-color: #28a745; /* أخضر */
+            background-color: #28a745;
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
@@ -91,19 +87,18 @@
         }
 
         #viewSharedFilesBtn:hover {
-            background-color: #218838; /* أخضر أغمق عند التمرير */
+            background-color: #218838;
         }
 
-        /* Modal */
         .modal {
-            display: none; /* Initially hidden */
+            display: none;
             position: fixed;
             z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5); /* Semi-transparent black background */
+            background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
@@ -111,7 +106,7 @@
             margin: 10% auto;
             padding: 2rem;
             border-radius: 5px;
-            width: 80%; /* Adjust as needed */
+            width: 80%;
             max-width: 400px;
             text-align: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -129,7 +124,6 @@
             color: black;
         }
 
-        /* Footer */
         footer {
             background-color: #333;
             color: white;
@@ -138,10 +132,9 @@
             margin-top: 2rem;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* تقليل حجم العناصر في الشاشات الصغيرة */
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
 
             main {
@@ -159,13 +152,11 @@
 
     <main>
         <div id="publicGallery" class="gallery">
-            <!-- سيتم ملء هذا الجزء بالملفات المشتركة من خلال JavaScript -->
             <p id="loadingMessage">جارٍ تحميل الملفات...</p>
         </div>
 
         <button id="viewSharedFilesBtn">تصفح الملفات المشتركة</button>
 
-        <!-- نموذج تسجيل الدخول (يظهر عند النقر على الزر) -->
         <div id="loginModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -185,8 +176,15 @@
 
     <script>
         // --- إعدادات مبدئية ---
-        const masterPassword = "YourSecureMasterPassword"; // يجب تغيير هذا بمفتاح آمن حقيقي (يجب تخزينه على الخادم)
-        const sharedFilesData = [ // بيانات الملفات المشتركة (مثال)
+        // نستخدم localStorage لتخزين كلمة المرور
+        let storedPassword = localStorage.getItem('masterPassword');
+        if (!storedPassword) {
+             // إذا لم تكن موجودة، نضع كلمة مرور افتراضية
+             storedPassword = "defaultPassword123";
+             localStorage.setItem('masterPassword', storedPassword);
+        }
+
+        const sharedFilesData = JSON.parse(localStorage.getItem('sharedFiles')) || [
             { name: "ملزم الرياضيات.pdf", url: "#", type: "pdf" },
             { name: "فيديو شرح الخوارزميات.mp4", url: "#", type: "video" },
             { name: "مشروع تطبيقي.zip", url: "#", type: "zip" },
@@ -205,15 +203,12 @@
 
         // --- إظهار/إخفاء الواجهة العامة ---
         function showPublicGallery() {
-            // هنا يمكن إضافة منطق لعرض الملفات المشتركة
-            // نحن نعرض بيانات ثابتة الآن كمثال
             if (sharedFilesData.length > 0) {
                 loadingMessage.style.display = 'none';
-                sharedFilesData.forEach(file => {
+                sharedFilesData.forEach((file, index) => {
                     const fileItem = document.createElement('div');
                     fileItem.className = 'file-item';
 
-                    // نموذج بسيط لعرض الملفات (يمكن تحسينه لعرض صور أو رموز مختلفة حسب النوع)
                     const icon = file.type === 'pdf' ? '📄' : file.type === 'video' ? '🎥' : file.type === 'zip' ? '📦' : '🖼️';
                     fileItem.innerHTML = `
                         <span style="font-size: 2em;">${icon}</span>
@@ -239,29 +234,23 @@
 
         // --- معالجة تسجيل الدخول ---
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // منع إرسال النموذج الافتراضي
+            e.preventDefault();
             const enteredPassword = masterPasswordInput.value;
 
-            // --- التحقق من كلمة المرور ---
-            // ملاحظة: في تطبيق حقيقي، يجب التحقق من كلمة المرور على الخادم.
-            // هذا المثال يستخدم كلمة مرور ثابتة للتبسيط.
-            if (enteredPassword === masterPassword) {
-                alert("تم الدخول بنجاح! يمكنك الآن إدارة ملفاتك.");
+            if (enteredPassword === storedPassword) {
+                alert("تم الدخول بنجاح!");
                 loginModal.style.display = 'none';
-                masterPasswordInput.value = ''; // مسح حقل كلمة المرور بعد الدخول
-                // هنا يمكنك إظهار لوحة التحكم أو إعادة توجيه المستخدم
-                // window.location.href = 'dashboard.html'; // إعادة توجيه إلى لوحة التحكم (يجب إنشاؤها)
-                // لنقوم بعرض رسالة توضيحية بدلاً من ذلك في هذا المثال
-                alert("لإدارة الملفات، ستحتاج إلى تطوير الجزء الخلفي (Backend) للموقع.");
+                masterPasswordInput.value = '';
+                // إعادة توجيه إلى لوحة التحكم
+                window.location.href = 'dashboard.html';
             } else {
                 alert("كلمة المرور غير صحيحة!");
-                masterPasswordInput.value = ''; // مسح حقل كلمة المرور عند الخطأ
+                masterPasswordInput.value = '';
             }
         });
 
         // --- تحميل الواجهة العامة ---
         document.addEventListener('DOMContentLoaded', () => {
-            // تحميل الملفات المشتركة عند تحميل الصفحة
             showPublicGallery();
         });
     </script>
